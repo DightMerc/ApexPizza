@@ -1,0 +1,448 @@
+﻿{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Apex Pizza - Доставка пиццы в Ташкенте! Среднее время доставки 1 час</title>
+    <link rel="stylesheet" href="{% static 'css\font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'slick\slick-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'slick\slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css\owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css\owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css\style.css' %}">
+    <link rel="stylesheet" href="{% static 'css\fonts.css' %}">
+    <link rel="shortcut icon" href="{% static 'images\favapex.ico' %}" type="image/x-icon">
+</head>
+
+<body>
+    <header class="header">
+        <div class="header-top">
+            <a href="index.html" class="logo">
+                
+                <img src="{% static 'images\logo.png' %}" alt="">
+            </a>
+            <div class="header-top-right">
+                <div class="header-delivery">
+                    <span>Доставка пиццы</span>
+                    <span>Среднее время доставки 1 час</span>
+                </div>
+                <div class="header-call">
+                        
+                    <img src="{% static 'images\phone.png' %}" alt="">
+                    <a href="tel:+998712022020">(71)202-20-20</a>
+                </div>
+            </div>
+        </div>
+        <div class="header-bottom">
+            <nav class="header-menu">
+                <a href="index.html" class="header-sticky-logo" style="">
+                    
+                    <img src="{% static 'images\logo-no-text.png' %}" alt="">
+                </a>
+                <ul>
+                    <li><a href="#pizza">Пиццы</a></li>
+                    <li><a href="#drinks">Напитки</a></li>
+                    <li><a href="#snacks">Закуски</a></li>
+                    <li><a href="#sauces">Соусы</a></li>
+                    <li><a href="#sets">Сеты</a></li>
+                    <li><a href="discounts.html">Акции</a></li>
+                    <li><a href="vacancy.html">Вакансии</a></li>
+                    <li><a href="blog.html">Блог</a></li>
+                    <li><a href="contact.html">Контакты</a></li>
+                    <li><a href="about.html">О нас</a></li>
+                </ul>
+            </nav>
+            <div class="header-bottom-right">
+                <div class="header-cart">
+                    <div class="header-card-total">
+                        <div class="header-cart-sum">
+                            <span>63000</span>
+                            <span>сум</span>
+                        </div>
+                        <div class="header-cart-number">
+                            <span>2</span>
+                            <span>товара</span>
+                            <span class="header-cart-toggler">
+                                <i class="fa fa-angle-down"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <a href="cart.html" class="btn-header-cart">Корзина</a>
+                    <div class="header-cart-products">
+                        <div class="header-cart-product">
+                            <button type="button" class="header-cart-product-remove">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                            <h5>Пепперони</h5>
+                            <span>Традиционное, 25см</span>
+                            <div class="amount-controllers">
+                                <button class="amount-remove" type="button" name="button">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <input type="text" name="name" value="0">
+                                <button class="amount-add" type="button" name="button">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="header-cart-product">
+                            <button type="button" class="header-cart-product-remove">
+                                <i class="fa fa-times" aria-hidden="true"></i>
+                            </button>
+                            <h5>Маргарита</h5>
+                            <span>Традиционное, 25см</span>
+                            <div class="amount-controllers">
+                                <button class="amount-remove" type="button" name="button"><i class="fa fa-minus"></i>
+                                </button>
+                                <input type="text" name="name" value="0">
+                                <button class="amount-add" type="button" name="button">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="header-cart-products-sum">
+                            <span>Сумма заказа:</span>
+                            <span>63000 сум</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="" class="btn-header-cashback"><img src="{% static 'images\cashback.png' %}" alt="">Cashback</a>
+            </div>
+        </div>
+    </header>
+    <!-- Header Mobile -->
+    <header class="header-mobile">
+        <div class="header-panel">
+            <div class="header-mobile-logo">
+                <a href="">
+                    
+                    <img src="{% static 'images\logo.png' %}" alt="">
+                </a>
+            </div>
+            <div class="header-toggler">
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="header-mobile-menu">
+            <ul>
+                <li><a href="#pizza">Пиццы</a></li>
+                <li><a href="#drinks">Напитки</a></li>
+                <li><a href="#snacks">Закуски</a></li>
+                <li><a href="#sauces">Соусы</a></li>
+                <li><a href="#sets">Сеты</a></li>
+                <li><a href="discounts.html">Акции</a></li>
+                <li><a href="vacancy.html">Вакансии</a></li>
+                <li><a href="blog.html">Блог</a></li>
+                <li><a href="contact.html">Контакты</a></li>
+                <li><a href="about.html">О нас</a></li>
+            </ul>
+            <div class="header-top-right">
+                <div class="header-delivery">
+                    <span>Доставка пиццы</span>
+                    <span>Среднее время доставки 1 час</span>
+                </div>
+                <div class="header-call">
+                        
+                    <img src="{% static 'images\phone.png' %}" alt="">
+                    <a href="tel:+998712022020">(71)202-20-20</a>
+                </div>
+            </div>
+        </div>
+        <a href="" class="header-mobile-cart">
+            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+            <span class="header-mobile-cart-number">12</span>
+        </a>
+    </header>
+    <!-- Header Mobile end  -->
+    <section class="hero-slider">
+            
+        <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
+        <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
+        <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
+        <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
+    </section>
+
+    <section class="hero-mobile">
+            
+        <img src="{% static 'images\banners\banner-mobile.jpg' %}" alt="">
+    </section>
+    <section class="main-content" style="background-image: url('images/shapes-bg.png');">
+        <div class="wrapper">
+            <h2 class="section-title">
+                    
+                <img src="{% static 'images\title-bg.png' %}" alt="">
+                ПИЦЦА:
+            </h2>
+            <div class="pizza" id="pizza">
+                {% for pizza in pizzas %}
+                <div class="pizza-card">
+                    <div class="pizza-img">
+                        {{ pizza.picture }}
+                        <img id="CommonImg" src="{% static 'images\pizza\margarita.png' %}">
+                    </div>
+                    
+                    
+                    <div class="pizza-details">
+                        <div class="pizza-info">
+                            <h3 class="pizza-name">{{pizza.title}}</h3>
+                            <div class="pizza-comp">
+                                {% for topping in pizza.toppings.all %}
+                                <button class="pizza-comp-option">
+                                    {{pizzas.toppings.all}}
+                                    {{topping.title}}
+                                    <i class="fa fa-times" aria-hidden="true"></i>
+                                </button>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="pizza-size">
+                                <form>
+                                    <div class="radio-group">
+                                        <input type="radio" id="margarita-35sm" name="selector">
+                                        <label for="margarita-35sm">35см</label>
+                                        <input type="radio" id="margarita-30sm" name="selector">
+                                        <label for="margarita-30sm">30см</label>
+                                        <input type="radio" id="margarita-25sm" name="selector" checked="">
+                                        <label for="margarita-25sm">25см</label>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="pizza-pastry">
+                                <form>
+                                    <div class="radio-group">
+                                        <input type="radio" id="margarita-thin" name="selector" value="0">
+                                        <label for="margarita-thin">Тонкое</label>
+                                        <input type="radio" id="margarita-traditional" name="selector" checked="">
+                                        <label for="margarita-traditional">Традиционное</label>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="pizza-buy">
+                                <button class="add-to-cart">В корзину</button>
+                                <span class="pizza-price">30 000 сум</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+            <h2 class="section-title">
+                    
+                <img src="{% static 'images\title-bg.png' %}" alt="">
+                НАПИТКИ:
+            </h2>
+            <div class="drinks" id="drinks">
+                <div class="drinks-card">
+                    <div class="drink-photo">
+                            
+                        <img src="{% static 'images\drinks\pepsi.png' %}" alt="">
+                    </div>
+                    <h3 class="drinks-name">Пепси</h3>
+                    <span class="drinks-price">3 000 сум</span>
+                    <div class="drinks-size">
+                        <form>
+                            <div class="radio-group">
+                                <input type="radio" id="pepsi-1.5" name="selector">
+                                <label for="pepsi-1.5">1.5л</label>
+                                <input type="radio" id="pepsi-1" name="selector">
+                                <label for="pepsi-1">1л</label>
+                                <input type="radio" id="pepsi-0.5" name="selector" checked="">
+                                <label for="pepsi-0.5">0.5л</label>
+                            </div>
+                        </form>
+                    </div>
+                    <button class="add-to-cart">В корзину</button>
+                </div>
+                
+            </div>
+            <h2 class="section-title">
+                    
+                <img src="{% static 'images\title-bg.png' %}" alt="">
+                Закуски:
+            </h2>
+            <div class="snacks" id="snacks">
+                <div class="snacks-card">
+                    <div class="snacks-photo">
+                            
+                        <img src="{% static 'images\snacks\onion-rings.png' %}" alt="">
+                    </div>
+                    <h3 class="snacks-name">Луковые кольца (6 шт.)</h3>
+                    <div class="snacks-actions">
+                        <button class="add-to-cart">В корзину</button>
+                        <span class="snacks-price">11 000 сум</span>
+                    </div>
+                </div>
+                
+            </div>
+            <h2 class="section-title">
+                    
+                <img src="{% static 'images\title-bg.png' %}" alt="">
+                Соусы:
+            </h2>
+            <div class="sauces" id="sauces">
+                <div class="sauces-card">
+                    <div class="sauces-photo">
+                            
+                        <img src="{% static 'images\sauces\salsa.png' %}" alt="">
+                    </div>
+                    <h3 class="sauces-name">
+                        Соус Сальса
+                    </h3>
+                    <div class="sauces-actions">
+                        <button class="add-to-cart">В корзину</button>
+                        <span class="sauces-price">2 000 сум</span>
+                    </div>
+                </div>
+                
+            </div>
+            <h2 class="section-title">
+                <img src="{% static 'images\title-bg.png' %}" alt="">
+                Сеты:
+            </h2>
+            <div class="sets-slider" id="sets">
+                <div>
+                    
+                    <img src="{% static 'images\sets\set-1.png' %}">
+                    <div class="sets-text">
+                        <h3 class="sets-name">Сет 1</h3>
+                        <div class="sets-actions">
+                            <button class="add-to-cart">В корзину</button>
+                            <span class="sets-price">11 000 сум</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="{% static 'images\sets\set-1.png' %}">
+                    <div class="sets-text">
+                        <h3 class="sets-name">Сет 1</h3>
+                        <div class="sets-actions">
+                            <button class="add-to-cart">В корзину</button>
+                            <span class="sets-price">11 000 сум</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="{% static 'images\sets\set-1.png' %}">
+                    <div class="sets-text">
+                        <h3 class="sets-name">Сет 1</h3>
+                        <div class="sets-actions">
+                            <button class="add-to-cart">В корзину</button>
+                            <span class="sets-price">11 000 сум</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="{% static 'images\sets\set-1.png' %}">
+                    <div class="sets-text">
+                        <h3 class="sets-name">Сет 1</h3>
+                        <div class="sets-actions">
+                            <button class="add-to-cart">В корзину</button>
+                            <span class="sets-price">11 000 сум</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="{% static 'images\sets\set-1.png' %}">
+                    <div class="sets-text">
+                        <h3 class="sets-name">Сет 1</h3>
+                        <div class="sets-actions">
+                            <button class="add-to-cart">В корзину</button>
+                            <span class="sets-price">11 000 сум</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="{% static 'images\sets\set-1.png' %}">
+                    <div class="sets-text">
+                        <h3 class="sets-name">Сет 1</h3>
+                        <div class="sets-actions">
+                            <button class="add-to-cart">В корзину</button>
+                            <span class="sets-price">11 000 сум</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="home-about">
+                <p>
+                    <span>APEX</span> ПИЦЦА ЭТО - Пиццерия APEX PIZZA была создана для того, чтобы сделать нашу жизнь
+                    вкуснее. Если вам хочется чего-то необычного, если вы не успели приготовить обед или ужин,
+                    если вы задержались на работе и чувствуете, что пора перекусить - то наша
+                    пицца это именно то, что нужно.
+                    <br>
+                    <br>
+                    Только качественные продукты, только проверенные рецепты и только лучшие повара,
+                    которые готовят специально для Вас.
+                    <br>
+                    <br>
+                    Не верите! Тогда закажите нашу пиццу прямо сейчас
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="footer-yellow-line"></div>
+
+    <footer class="footer">
+        <div class="wrapper">
+            <div class="footer-logo">
+                <a href="index.html">
+                        
+                    <img src="{% static 'images\logo-footer.png' %}" alt="">
+                </a>
+            </div>
+            <div class="footer-menu">
+                <ul>
+                    <li><a href="#">Пиццы</a></li>
+                    <li><a href="#">Напитки</a></li>
+                    <li><a href="#">Закуски</a></li>
+                    <li><a href="#">Соусы</a></li>
+                    <li><a href="#">Сеты</a></li>
+                    <li><a href="#">Акции</a></li>
+                    <li><a href="#">Вакансии</a></li>
+                    <li><a href="#">Блог</a></li>
+                    <li><a href="#">Контакты</a></li>
+                    <li><a href="#">О нас</a></li>
+                </ul>
+            </div>
+            <div class="footer-numbers">
+                <h4>Зона<br>Доставки</h4>
+                <a href="tel:+998712022020" class="footer-phone">
+                        
+                    <img src="{% static 'images\footer-phone.png' %}" alt="">
+                    (71) 202-20-20
+                </a>
+                <div class="footer-delivery">
+                    <span>Доставка пиццы</span>
+                    <span>Среднее время доставки 1 час</span>
+                </div>
+            </div>
+            <div class="footer-map-socials">
+                <div class="footer-map">
+                    <iframe src="https://yandex.ru/map-widget/v1/-/CCB8VJyy" width="560" height="400" frameborder="1" allowfullscreen="true"></iframe>
+                </div>
+                <div class="footer-socials">
+                    <a href=""><i class="fa fa-instagram"></i> </a>
+                    <a href=""><i class="fa fa-facebook-square" aria-hidden="true"></i> </a>
+                </div>
+            </div>
+        </div>
+
+    </footer>
+    <script src="{% static 'js\jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js\owl.carousel.min.js' %}"></script>
+    <script src="{% static 'slick\slick.min.js' %}"></script>
+    <script src="{% static 'js\script.js' %}"></script>
+
+</body>
+
+</html>
