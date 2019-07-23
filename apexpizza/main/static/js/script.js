@@ -28,6 +28,23 @@ $('.sets-slider').slick({
 })
 
 
+$(document).ready(function () {
+  $("#addToCart").submit(function (event) {
+    $.ajax({
+      type: "POST",
+      url: "/edit_favorites/",
+      data: {
+        'selector': $('#addToCart').val() // from form
+      },
+      success: function () {
+        $('#message').html("<h2>Contact Form Submitted!</h2>")
+      }
+    });
+    return false; //<---- move it here
+  });
+
+});
+
 $('.pizza-comp-option').click(function () {
     $(this).toggleClass('delete');
 });

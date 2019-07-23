@@ -172,66 +172,69 @@
             
         <img src="{% static 'images\banners\banner-mobile.jpg' %}" alt="">
     </section>
+
+
     <section class="main-content" style="background-image: url('images/shapes-bg.png');">
         <div class="wrapper">
             <h2 class="section-title">
-                    
+                
                 <img src="{% static 'images\title-bg.png' %}" alt="">
                 ПИЦЦА:
             </h2>
+            {{number}}
             <div class="pizza" id="pizza">
                 {% for pizza in pizzas %}
-                <div class="pizza-card">
-                    <div class="pizza-img">
-                        {{ pizza.picture }}
-                        <img id="CommonImg" src="{% static 'images\pizza\margarita.png' %}">
-                    </div>
-                    
-                    
-                    <div class="pizza-details">
-                        <div class="pizza-info">
-                            <h3 class="pizza-name">{{pizza.title}}</h3>
-                            <div class="pizza-comp">
-                                {% for topping in pizza.toppings.all %}
-                                <button class="pizza-comp-option">
-                                    {{pizzas.toppings.all}}
-                                    {{topping.title}}
-                                    <i class="fa fa-times" aria-hidden="true"></i>
-                                </button>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div>
-                            <div class="pizza-size">
-                                <form>
-                                    <div class="radio-group">
-                                        <input type="radio" id="margarita-35sm" name="selector">
-                                        <label for="margarita-35sm">35см</label>
-                                        <input type="radio" id="margarita-30sm" name="selector">
-                                        <label for="margarita-30sm">30см</label>
-                                        <input type="radio" id="margarita-25sm" name="selector" checked="">
-                                        <label for="margarita-25sm">25см</label>
-                                    </div>
-                                </form>
-                            </div>
+                <form method="POST" class="post-form" id="post-form" name={{pizza.id}}>
 
-                            <div class="pizza-pastry">
-                                <form>
-                                    <div class="radio-group">
-                                        <input type="radio" id="margarita-thin" name="selector" value="0">
-                                        <label for="margarita-thin">Тонкое</label>
-                                        <input type="radio" id="margarita-traditional" name="selector" checked="">
-                                        <label for="margarita-traditional">Традиционное</label>
+                    <div class="pizza-card">
+                        
+                            <div class="pizza-img">
+                                <img id="CommonImg" src="/media/{{pizza.picture}}">
+                            </div>
+                                {% csrf_token %}
+                            
+                                <div class="pizza-details">
+                                    <div class="pizza-info">
+                                        <h3 class="pizza-name">{{pizza.title}}</h3>
+                                        <div class="pizza-comp">
+                                            {% for topping in pizza.toppings.all %}
+                                            <input type="checkbox" class="pizza-comp-option" name="toppings{{pizza.id}}" value={{topping.id}}>
+                                                {{pizzas.toppings.all}}
+                                                {{topping.title}}
+                                                <i class="fa fa-times" aria-hidden="true"></i>
+                                            </input>
+                                            {% endfor %}
+                                        </div>
                                     </div>
-                                </form>
-                            </div>
-                            <div class="pizza-buy">
-                                <button class="add-to-cart">В корзину</button>
-                                <span class="pizza-price">30 000 сум</span>
-                            </div>
-                        </div>
+                                    <div>
+                                        <div class="pizza-size">
+                                                <div class="radio-group">
+                                                    <input type="radio" id="{{ pizza.id }}-35sm" name="size_selector" value="35">
+                                                    <label for="{{ pizza.id }}-35sm">35см</label>
+                                                    <input type="radio" id="{{ pizza.id }}-30sm" name="size_selector" value="30">
+                                                    <label for="{{ pizza.id }}-30sm">30см</label>
+                                                    <input type="radio" id="{{ pizza.id }}-25sm" name="size_selector" value="25" checked="">
+                                                    <label for="{{ pizza.id }}-25sm">25см</label>
+                                                </div>
+                                        </div>
+
+                                        <div class="pizza-pastry">
+                                                <div class="radio-group">
+                                                    <input type="radio" id="{{ pizza.id }}-thin" name="selector" value="thin">
+                                                    <label for="{{ pizza.id }}-thin">Тонкое</label>
+                                                    <input type="radio" id="{{ pizza.id }}-traditional" name="selector" value="trad" checked="">
+                                                    <label for="{{ pizza.id }}-traditional">Традиционное</label>
+                                                </div>
+                                        </div>
+                                        <div class="pizza-buy">
+                                            <button class="add-to-cart" id="addToCart">В корзину</button>
+                                            <span class="pizza-price">{{ pizza.price|floatformat:"0" }} сум</span>
+                                        </div>
+                                    </div>
+                                </div>
                     </div>
-                </div>
+                </form>
+                
                 {% endfor %}
 
             </div>
@@ -438,10 +441,12 @@
         </div>
 
     </footer>
+    
     <script src="{% static 'js\jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js\owl.carousel.min.js' %}"></script>
     <script src="{% static 'slick\slick.min.js' %}"></script>
     <script src="{% static 'js\script.js' %}"></script>
+    <script src="{% static 'js\ajax.js' %}"></script>
 
 </body>
 
