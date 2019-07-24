@@ -46,6 +46,25 @@ $('form').on('submit', function(event){
 
 });
 
+$('input').change(function(event){
+    if (event.target.name == "size_selector"){
+        event.preventDefault();
+        change_price(event, "pizzaprice");
+    }
+    if (event.target.name == "volume_selector"){
+        event.preventDefault();
+        change_price(event, "drinkprice");
+    }
+    
+});
+
+
+function change_price(event, name){
+    var sender = event.target.id;
+    var price = document.getElementById(name + " " + sender.split(" ")[0]);
+    price.innerHTML = sender.split(" ")[2] + " сум"
+};
+
 // AJAX for posting
 function create_post(event) {
 

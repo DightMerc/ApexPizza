@@ -1,4 +1,5 @@
 ﻿{% load static %}
+{% load my_tags %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -160,7 +161,7 @@
         </a>
     </header>
     <!-- Header Mobile end  -->
-    <section class="hero-slider">
+    <section class="hero-slider"> 
             
         <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
         <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
@@ -182,6 +183,9 @@
                 ПИЦЦА:
             </h2>
             {{number}}
+            {{pricesFV}}
+
+
             <div class="pizza" id="pizza">
                 {% for pizza in pizzas %}
                 <form method="POST" class="post-form" id="{{pizza.id}}" name="pizza {{pizza.id}}"">
@@ -209,12 +213,24 @@
                                     <div>
                                         <div class="pizza-size">
                                                 <div class="radio-group">
-                                                    <input type="radio" id="{{ pizza.id }}-35sm" name="size_selector" value="1">
-                                                    <label for="{{ pizza.id }}-35sm">35см</label>
-                                                    <input type="radio" id="{{ pizza.id }}-30sm" name="size_selector" value="2">
+                                                    {% for price in pricesFS %}
+                                                    
+                                                        {% if price.pizza.id == pizza.id %}
+                                                            {% if price.size.id == 3 %}
+                                                                <input type="radio" id="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}" name="size_selector" value="{{price.size.id}}" checked="">
+                                                                <label for="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}">{{price.size.title}}</label>
+                                                            {% else %}
+                                                                <input type="radio" id="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}" name="size_selector" value="{{price.size.id}}">
+                                                                <label for="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}">{{price.size.title}}</label>
+                                                            {% endif %}
+
+                                                        {% endif %}
+                                                    {% endfor %}
+
+                                                    <!-- <input type="radio" id="{{ pizza.id }}-30sm" name="size_selector" value="2">
                                                     <label for="{{ pizza.id }}-30sm">30см</label>
                                                     <input type="radio" id="{{ pizza.id }}-25sm" name="size_selector" value="3" checked="">
-                                                    <label for="{{ pizza.id }}-25sm">25см</label>
+                                                    <label for="{{ pizza.id }}-25sm">25см</label> -->
                                                 </div>
                                         </div>
 
@@ -228,7 +244,15 @@
                                         </div>
                                         <div class="pizza-buy">
                                             <button class="add-to-cart" id="addToCart">В корзину</button>
-                                            <span class="pizza-price">{{ pizza.price|floatformat:"0" }} сум</span>
+                                            {% for price in pricesFS %}
+                                                    
+                                                {% if price.pizza.id == pizza.id %}
+                                                    {% if price.size.id == 3 %}
+                                                        <span class="pizza-price" id="pizzaprice {{pizza.id}}">{{ price.price|floatformat:"0" }} сум</span>
+                                                    {% endif %}
+                                                {% endif %}
+                                            
+                                            {% endfor %}
                                         </div>
                                     </div>
                                 </div>
@@ -250,18 +274,43 @@
                     <div class="drink-photo">
                         <img src="/media/{{drink.picture}}" alt="">
                     </div>
-                    {% csrf_token %}
-
                     <h3 class="drinks-name">{{drink.title}}</h3>
-                    <span class="drinks-price">{{ drink.price|floatformat:"0" }} сум</span>
+
+                    {% csrf_token %}
+                    {% for price in pricesFV %}
+
+                        {% if price.drink.id == drink.id %}
+                            {% if price.volume.id == 1 %}
+                                <span class="drinks-price" id="drinkprice {{drink.id}}">{{ price.price|floatformat:"0" }} сум</span>
+                            {% endif %}
+                        {% endif %}
+                    
+                    {% endfor %}
+                    
                     <div class="drinks-size">
                         <div class="radio-group">
-                            <input type="radio" id="drink{{drink.id}}" name="selector">
-                            <label for="drink{{drink.id}}">1.5л</label>
-                            <input type="radio" id="drink{{drink.id}}" name="selector">
-                            <label for="drink{{drink.id}}">1л</label>
-                            <input type="radio" id="drink{{drink.id}}" name="selector" checked="">
-                            <label for="drink{{drink.id}}">0.5л</label>
+                            <!-- {% for volume in drink.available.all %}
+                                {% if volume.id == m_volume|length %}
+                                    <input type="radio" id="drink {{drink.id}} {{volume.id}} " name="volume_selector" checked="">
+                                    <label for="drink {{drink.id}} {{volume.id}}">{{volume.title}}</label>
+                                {% else %}
+                                    <input type="radio" id="drink {{drink.id}} {{volume.id}}" name="volume_selector">
+                                    <label for="drink {{drink.id}} {{volume.id}}">{{volume.title}}</label>
+                                {% endif %}
+                            {% endfor %} -->
+
+                            {% for price in pricesFV %}
+                            
+                                {% if price.drink.id == drink.id %}
+                                    {% if price.volume.id == 1 %}
+                                        <input type="radio" id="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}" name="volume_selector" value="{{price.size.id}}" checked="">
+                                        <label for="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}">{{price.volume.title}}</label>
+                                    {% else %}
+                                        <input type="radio" id="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}" name="volume_selector" value="{{price.size.id}}">
+                                        <label for="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}">{{price.volume.title}}</label>
+                                    {% endif %}
+                                {% endif %}
+                            {% endfor %}
                         </div>
                     </div>
                     <button type="submit" class="add-to-cart">В корзину</button>
