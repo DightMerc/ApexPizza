@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import Pizza, Topping, DoughType, Size
-from .models import Drink, Sauce, Snack, Set
+from .models import Drink, Sauce, Snack, Set, AnonymousUser, TempPizza, TempOrder, Volume
 
 # register your models here.
 admin.site.register(Pizza)
@@ -13,4 +13,12 @@ admin.site.register(Sauce)
 admin.site.register(Snack)
 
 admin.site.register(Set)
+
+admin.site.register(AnonymousUser)
+admin.site.register(TempPizza)
+admin.site.register(TempOrder)
+admin.site.register(Volume)
+
+
+
 

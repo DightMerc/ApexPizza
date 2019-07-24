@@ -184,7 +184,7 @@
             {{number}}
             <div class="pizza" id="pizza">
                 {% for pizza in pizzas %}
-                <form method="POST" class="post-form" id="post-form" name={{pizza.id}}>
+                <form method="POST" class="post-form" id="{{pizza.id}}" name="pizza {{pizza.id}}"">
 
                     <div class="pizza-card">
                         
@@ -209,20 +209,20 @@
                                     <div>
                                         <div class="pizza-size">
                                                 <div class="radio-group">
-                                                    <input type="radio" id="{{ pizza.id }}-35sm" name="size_selector" value="35">
+                                                    <input type="radio" id="{{ pizza.id }}-35sm" name="size_selector" value="1">
                                                     <label for="{{ pizza.id }}-35sm">35см</label>
-                                                    <input type="radio" id="{{ pizza.id }}-30sm" name="size_selector" value="30">
+                                                    <input type="radio" id="{{ pizza.id }}-30sm" name="size_selector" value="2">
                                                     <label for="{{ pizza.id }}-30sm">30см</label>
-                                                    <input type="radio" id="{{ pizza.id }}-25sm" name="size_selector" value="25" checked="">
+                                                    <input type="radio" id="{{ pizza.id }}-25sm" name="size_selector" value="3" checked="">
                                                     <label for="{{ pizza.id }}-25sm">25см</label>
                                                 </div>
                                         </div>
 
                                         <div class="pizza-pastry">
                                                 <div class="radio-group">
-                                                    <input type="radio" id="{{ pizza.id }}-thin" name="selector" value="thin">
+                                                    <input type="radio" id="{{ pizza.id }}-thin" name="selector" value="1">
                                                     <label for="{{ pizza.id }}-thin">Тонкое</label>
-                                                    <input type="radio" id="{{ pizza.id }}-traditional" name="selector" value="trad" checked="">
+                                                    <input type="radio" id="{{ pizza.id }}-traditional" name="selector" value="2" checked="">
                                                     <label for="{{ pizza.id }}-traditional">Традиционное</label>
                                                 </div>
                                         </div>
@@ -244,27 +244,29 @@
                 НАПИТКИ:
             </h2>
             <div class="drinks" id="drinks">
+                {% for drink in drinks %}    
+                <form method="POST" class="post-form" id="{{drink.id}}" name="drink {{drink.id}}" >
                 <div class="drinks-card">
                     <div class="drink-photo">
-                            
-                        <img src="{% static 'images\drinks\pepsi.png' %}" alt="">
+                        <img src="/media/{{drink.picture}}" alt="">
                     </div>
-                    <h3 class="drinks-name">Пепси</h3>
-                    <span class="drinks-price">3 000 сум</span>
+                    {% csrf_token %}
+
+                    <h3 class="drinks-name">{{drink.title}}</h3>
+                    <span class="drinks-price">{{ drink.price|floatformat:"0" }} сум</span>
                     <div class="drinks-size">
-                        <form>
-                            <div class="radio-group">
-                                <input type="radio" id="pepsi-1.5" name="selector">
-                                <label for="pepsi-1.5">1.5л</label>
-                                <input type="radio" id="pepsi-1" name="selector">
-                                <label for="pepsi-1">1л</label>
-                                <input type="radio" id="pepsi-0.5" name="selector" checked="">
-                                <label for="pepsi-0.5">0.5л</label>
-                            </div>
-                        </form>
+                        <div class="radio-group">
+                            <input type="radio" id="drink{{drink.id}}" name="selector">
+                            <label for="drink{{drink.id}}">1.5л</label>
+                            <input type="radio" id="drink{{drink.id}}" name="selector">
+                            <label for="drink{{drink.id}}">1л</label>
+                            <input type="radio" id="drink{{drink.id}}" name="selector" checked="">
+                            <label for="drink{{drink.id}}">0.5л</label>
+                        </div>
                     </div>
-                    <button class="add-to-cart">В корзину</button>
+                    <button type="submit" class="add-to-cart">В корзину</button>
                 </div>
+                {% endfor %}
                 
             </div>
             <h2 class="section-title">
