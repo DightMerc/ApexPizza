@@ -39,12 +39,15 @@ $.ajaxSetup({
 //     create_post(event);
 // });
 
-$('form').on('submit', function(event){
-    event.preventDefault();
-    // console.log("form submitted!")  // sanity check
-    create_post(event);
 
-});
+
+// $('form').on('submit', function(event){
+//     event.preventDefault();
+    
+//     // console.log("form submitted!")  // sanity check
+//     create_post(event);
+
+// });
 
 $('input').change(function(event){
     if (event.target.name == "size_selector"){
@@ -67,6 +70,10 @@ function change_price(event, name){
 
 // AJAX for posting
 function create_post(event) {
+    console.log("Trying to get data");
+    $.get("getmytemp/", function(data, status){
+        console.log("Data: " + data + "\nStatus: " + status);
+      });
 
     var size_selector = $("input[name='size_selector']:checked").val();
     var selector = $("input[name='selector']:checked").val();
@@ -126,6 +133,74 @@ function create_post(event) {
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
             }
         });
+    }  else if (sender.includes("snack")) {
+        var num = sender.replace("snack ", "");
+        
+        $.ajax({
+            url : "temp/"+num+"/", // the endpoint
+            type : "POST", // http method
+            data : { object : "snack"}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    } else if (sender.includes("sauce")) {
+        var num = sender.replace("sauce ", "");
+        
+        $.ajax({
+            url : "temp/"+num+"/", // the endpoint
+            type : "POST", // http method
+            data : { object : "sauce"}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+        
+    } else if (sender.includes("set")) {
+        var num = sender.replace("set ", "");
+        
+        $.ajax({
+            url : "temp/"+num+"/", // the endpoint
+            type : "POST", // http method
+            data : { object : "set"}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+        
     }
 
 

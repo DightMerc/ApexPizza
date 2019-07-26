@@ -10,7 +10,7 @@ $('.hero-slider').slick({
 });
 
 $('.sets-slider').slick({
-    doots: false,
+    dots: true,
     infinite: true,
     centerMode: true,
     slidesToShow: 3,
@@ -193,4 +193,10 @@ $('.cart-rec').owlCarousel({
             items: 3
         }
     }
+});
+
+
+$("#notification").fadeIn("slow").append('your message');
+$(".dismiss").click(function(){
+       $("#notification").fadeOut("slow");
 });

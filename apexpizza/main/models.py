@@ -141,11 +141,6 @@ class Set(models.Model):
 
     active = models.BooleanField("Активен", default=False)
 
-    pizzas = models.ManyToManyField(Pizza)
-    drinks = models.ManyToManyField(Drink)
-    snacks = models.ManyToManyField(Snack)
-    sauces = models.ManyToManyField(Sauce)
-
     price = models.FloatField("Цена", default=0)
 
     def __str__(self):
@@ -205,6 +200,7 @@ class TempOrder(models.Model):
     drinks = models.ManyToManyField(TempDrink)
     snacks = models.ManyToManyField(Snack)
     sauces = models.ManyToManyField(Sauce)
+    sets = models.ManyToManyField(Set)
 
     def __str__(self):
         return str(self.title)

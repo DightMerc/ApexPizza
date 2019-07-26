@@ -183,7 +183,6 @@
                 ПИЦЦА:
             </h2>
             {{number}}
-            {{pricesFV}}
 
 
             <div class="pizza" id="pizza">
@@ -324,17 +323,21 @@
                 Закуски:
             </h2>
             <div class="snacks" id="snacks">
-                <div class="snacks-card">
-                    <div class="snacks-photo">
-                            
-                        <img src="{% static 'images\snacks\onion-rings.png' %}" alt="">
+                {% for snack in snacks %}    
+                <form method="POST" class="post-form" id="{{snack.id}}" name="snack {{snack.id}}" >
+                    <div class="snacks-card">
+                        <div class="snacks-photo">
+                                
+                            <img src="/media/{{snack.picture}}" alt="">
+                        </div>
+                        <h3 class="snacks-name">{{snack.title}}</h3>
+                        <div class="snacks-actions">
+                            <button type="submit" class="add-to-cart">В корзину</button>
+                            <span class="snacks-price">{{ snack.price|floatformat:"0" }} сум</span>
+                        </div>
                     </div>
-                    <h3 class="snacks-name">Луковые кольца (6 шт.)</h3>
-                    <div class="snacks-actions">
-                        <button class="add-to-cart">В корзину</button>
-                        <span class="snacks-price">11 000 сум</span>
-                    </div>
-                </div>
+                </form>
+                {% endfor %}
                 
             </div>
             <h2 class="section-title">
@@ -343,19 +346,23 @@
                 Соусы:
             </h2>
             <div class="sauces" id="sauces">
-                <div class="sauces-card">
-                    <div class="sauces-photo">
-                            
-                        <img src="{% static 'images\sauces\salsa.png' %}" alt="">
+                {% for sauce in sauces %}    
+                <form method="POST" class="post-form" id="{{sauce.id}}" name="sauce {{sauce.id}}" >
+                    <div class="sauces-card">
+                        <div class="sauces-photo">
+                                
+                            <img src="/media/{{sauce.picture}}" alt="">
+                        </div>
+                        <h3 class="sauces-name">
+                            {{ sauce.title }}
+                        </h3>
+                        <div class="sauces-actions">
+                            <button type="submit" class="add-to-cart">В корзину</button>
+                            <span class="sauces-price">{{ sauce.price|floatformat:"0" }} сум</span>
+                        </div>
                     </div>
-                    <h3 class="sauces-name">
-                        Соус Сальса
-                    </h3>
-                    <div class="sauces-actions">
-                        <button class="add-to-cart">В корзину</button>
-                        <span class="sauces-price">2 000 сум</span>
-                    </div>
-                </div>
+                </form>
+                {% endfor %}
                 
             </div>
             <h2 class="section-title">
@@ -363,67 +370,22 @@
                 Сеты:
             </h2>
             <div class="sets-slider" id="sets">
+            {% for set in sets %}    
+            <form method="POST" class="post-form" id="{{set.id}}" name="set {{set.id}}" >
+
                 <div>
-                    
-                    <img src="{% static 'images\sets\set-1.png' %}">
+                    <img src="/media/{{set.picture}}">
                     <div class="sets-text">
-                        <h3 class="sets-name">Сет 1</h3>
+                        <h3 class="sets-name">{{ set.title }}</h3>
                         <div class="sets-actions">
-                            <button class="add-to-cart">В корзину</button>
-                            <span class="sets-price">11 000 сум</span>
+                            <button type="submit" class="add-to-cart">В корзину</button>
+                            <span class="sets-price">{{ set.price|floatformat:"0" }} сум</span>
                         </div>
                     </div>
                 </div>
-                <div>
-                    <img src="{% static 'images\sets\set-1.png' %}">
-                    <div class="sets-text">
-                        <h3 class="sets-name">Сет 1</h3>
-                        <div class="sets-actions">
-                            <button class="add-to-cart">В корзину</button>
-                            <span class="sets-price">11 000 сум</span>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <img src="{% static 'images\sets\set-1.png' %}">
-                    <div class="sets-text">
-                        <h3 class="sets-name">Сет 1</h3>
-                        <div class="sets-actions">
-                            <button class="add-to-cart">В корзину</button>
-                            <span class="sets-price">11 000 сум</span>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <img src="{% static 'images\sets\set-1.png' %}">
-                    <div class="sets-text">
-                        <h3 class="sets-name">Сет 1</h3>
-                        <div class="sets-actions">
-                            <button class="add-to-cart">В корзину</button>
-                            <span class="sets-price">11 000 сум</span>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <img src="{% static 'images\sets\set-1.png' %}">
-                    <div class="sets-text">
-                        <h3 class="sets-name">Сет 1</h3>
-                        <div class="sets-actions">
-                            <button class="add-to-cart">В корзину</button>
-                            <span class="sets-price">11 000 сум</span>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <img src="{% static 'images\sets\set-1.png' %}">
-                    <div class="sets-text">
-                        <h3 class="sets-name">Сет 1</h3>
-                        <div class="sets-actions">
-                            <button class="add-to-cart">В корзину</button>
-                            <span class="sets-price">11 000 сум</span>
-                        </div>
-                    </div>
-                </div>
+            </form>
+            {% endfor %}
+                
             </div>
             <div class="home-about">
                 <p>
