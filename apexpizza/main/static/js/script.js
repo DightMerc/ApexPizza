@@ -10,7 +10,7 @@ $('.hero-slider').slick({
 });
 
 $('.sets-slider').slick({
-    dots: true,
+    dots: false,
     infinite: true,
     centerMode: true,
     slidesToShow: 3,

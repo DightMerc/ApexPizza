@@ -61,12 +61,13 @@
                 <div class="header-cart">
                     <div class="header-card-total">
                         <div class="header-cart-sum">
-                            <span>63000</span>
+                            <span>{{ cart_price|floatformat:"0" }}</span>
                             <span>сум</span>
                         </div>
                         <div class="header-cart-number">
-                            <span>2</span>
+                            <span>{{ cart_num }}</span>
                             <span>товара</span>
+
                             <span class="header-cart-toggler">
                                 <i class="fa fa-angle-down"></i>
                             </span>
@@ -74,12 +75,13 @@
                     </div>
                     <a href="cart.html" class="btn-header-cart">Корзина</a>
                     <div class="header-cart-products">
-                        <div class="header-cart-product">
+                        {% for pizza in cart.pizzas.all %}
+                        <div class="header-cart-product" id="pizza {{ pizza.id }} {{ cart.id }}">
                             <button type="button" class="header-cart-product-remove">
-                                <i class="fa fa-times" aria-hidden="true"></i>
+                                <i class="fa fa-times" aria-hidden="true" id="remove pizza {{ pizza.id }} {{ cart.id }}"></i>
                             </button>
-                            <h5>Пепперони</h5>
-                            <span>Традиционное, 25см</span>
+                            <h5>{{ pizza.title }}</h5>
+                            <span>{{ pizza.doughType }}, {{ pizza.size }}</span>
                             <div class="amount-controllers">
                                 <button class="amount-remove" type="button" name="button">
                                     <i class="fa fa-minus"></i>
@@ -90,14 +92,17 @@
                                 </button>
                             </div>
                         </div>
+                        {% endfor %}
+                        {% for drink in cart.drinks.all %}
                         <div class="header-cart-product">
                             <button type="button" class="header-cart-product-remove">
-                                <i class="fa fa-times" aria-hidden="true"></i>
+                                <i class="fa fa-times" aria-hidden="true" id="remove drink {{ drink.id }} {{ cart.id }}"></i>
                             </button>
-                            <h5>Маргарита</h5>
-                            <span>Традиционное, 25см</span>
+                            <h5>{{ drink.title }}</h5>
+                            <span>{{ drink.volume }}</span>
                             <div class="amount-controllers">
-                                <button class="amount-remove" type="button" name="button"><i class="fa fa-minus"></i>
+                                <button class="amount-remove" type="button" name="button">
+                                    <i class="fa fa-minus"></i>
                                 </button>
                                 <input type="text" name="name" value="0">
                                 <button class="amount-add" type="button" name="button">
@@ -105,9 +110,63 @@
                                 </button>
                             </div>
                         </div>
+                        {% endfor %}
+                        {% for snack in cart.snacks.all %}
+                        <div class="header-cart-product">
+                            <button type="button" class="header-cart-product-remove" >
+                                <i class="fa fa-times" aria-hidden="true" id="remove snack {{ snack.id }} {{ cart.id }}"></i>
+                            </button>
+                            <h5>{{ snack.title }}</h5>
+                            <div class="amount-controllers">
+                                <button class="amount-remove" type="button" name="button">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <input type="text" name="name" value="0">
+                                <button class="amount-add" type="button" name="button">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% for sauce in cart.sauces.all %}
+                        <div class="header-cart-product">
+                            <button type="button" class="header-cart-product-remove" >
+                                <i class="fa fa-times" aria-hidden="true" id="remove sauce {{ sauce.id }} {{ cart.id }}" ></i>
+                            </button>
+                            <h5>{{ sauce.title }}</h5>
+                            <div class="amount-controllers">
+                                <button class="amount-remove" type="button" name="button">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <input type="text" name="name" value="0">
+                                <button class="amount-add" type="button" name="button">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        {% for set in cart.sets.all %}
+                        <div class="header-cart-product">
+                            <button type="button" class="header-cart-product-remove"></button>
+                                <i class="fa fa-times" aria-hidden="true" id="remove set {{ set.id }} {{ cart.id }}"></i>
+                            </button>
+                            <h5>{{ set.title }}</h5>
+                            <div class="amount-controllers">
+                                <button class="amount-remove" type="button" name="button">
+                                    <i class="fa fa-minus"></i>
+                                </button>
+                                <input type="text" name="name" value="0">
+                                <button class="amount-add" type="button" name="button">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        
                         <div class="header-cart-products-sum">
                             <span>Сумма заказа:</span>
-                            <span>63000 сум</span>
+                            <span>{{ cart_price|floatformat:"0" }} сум</span>
+                            
                         </div>
                     </div>
                 </div>
@@ -187,76 +246,78 @@
 
             <div class="pizza" id="pizza">
                 {% for pizza in pizzas %}
-                <form method="POST" class="post-form" id="{{pizza.id}}" name="pizza {{pizza.id}}"">
+                    {% if pizza.active %}
+                        <form method="POST" class="post-form" id="{{pizza.id}}" name="pizza {{pizza.id}}"">
 
-                    <div class="pizza-card">
-                        
-                            <div class="pizza-img">
-                                <img id="CommonImg" src="/media/{{pizza.picture}}">
-                            </div>
-                                {% csrf_token %}
-                            
-                                <div class="pizza-details">
-                                    <div class="pizza-info">
-                                        <h3 class="pizza-name">{{pizza.title}}</h3>
-                                        <div class="pizza-comp">
-                                            {% for topping in pizza.toppings.all %}
-                                            <input type="checkbox" class="pizza-comp-option" name="toppings{{pizza.id}}" value={{topping.id}}>
-                                                {{pizzas.toppings.all}}
-                                                {{topping.title}}
-                                                <i class="fa fa-times" aria-hidden="true"></i>
-                                            </input>
-                                            {% endfor %}
-                                        </div>
+                            <div class="pizza-card">
+                                
+                                    <div class="pizza-img">
+                                        <img id="CommonImg" src="/media/{{pizza.picture}}">
                                     </div>
-                                    <div>
-                                        <div class="pizza-size">
-                                                <div class="radio-group">
+                                        {% csrf_token %}
+                                    
+                                        <div class="pizza-details">
+                                            <div class="pizza-info">
+                                                <h3 class="pizza-name">{{pizza.title}}</h3>
+                                                <div class="pizza-comp">
+                                                    {% for topping in pizza.toppings.all %}
+                                                    <input type="checkbox" class="pizza-comp-option" name="toppings{{pizza.id}}" value={{topping.id}} checked="">
+                                                        {{pizzas.toppings.all}}
+                                                        {{topping.title}}
+                                                        <i class="fa fa-times" aria-hidden="true"></i>
+                                                    </input>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                            <div>
+                                                <div class="pizza-size">
+                                                        <div class="radio-group">
+                                                            {% for price in pricesFS %}
+                                                            
+                                                                {% if price.pizza.id == pizza.id %}
+                                                                    {% if price.size.id == 3 %}
+                                                                        <input type="radio" id="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}" name="size_selector" value="{{price.size.id}}" checked="">
+                                                                        <label for="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}">{{price.size.title}}</label>
+                                                                    {% else %}
+                                                                        <input type="radio" id="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}" name="size_selector" value="{{price.size.id}}">
+                                                                        <label for="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}">{{price.size.title}}</label>
+                                                                    {% endif %}
+
+                                                                {% endif %}
+                                                            {% endfor %}
+
+                                                            <!-- <input type="radio" id="{{ pizza.id }}-30sm" name="size_selector" value="2">
+                                                            <label for="{{ pizza.id }}-30sm">30см</label>
+                                                            <input type="radio" id="{{ pizza.id }}-25sm" name="size_selector" value="3" checked="">
+                                                            <label for="{{ pizza.id }}-25sm">25см</label> -->
+                                                        </div>
+                                                </div>
+
+                                                <div class="pizza-pastry">
+                                                        <div class="radio-group">
+                                                            <input type="radio" id="{{ pizza.id }}-thin" name="selector" value="1">
+                                                            <label for="{{ pizza.id }}-thin">Тонкое</label>
+                                                            <input type="radio" id="{{ pizza.id }}-traditional" name="selector" value="2" checked="">
+                                                            <label for="{{ pizza.id }}-traditional">Традиционное</label>
+                                                        </div>
+                                                </div>
+                                                <div class="pizza-buy">
+                                                    <button class="add-to-cart" id="addToCart">В корзину</button>
                                                     {% for price in pricesFS %}
-                                                    
+                                                            
                                                         {% if price.pizza.id == pizza.id %}
                                                             {% if price.size.id == 3 %}
-                                                                <input type="radio" id="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}" name="size_selector" value="{{price.size.id}}" checked="">
-                                                                <label for="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}">{{price.size.title}}</label>
-                                                            {% else %}
-                                                                <input type="radio" id="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}" name="size_selector" value="{{price.size.id}}">
-                                                                <label for="{{ pizza.id }} {{price.size.title}} {{price.price|floatformat:"0"}}">{{price.size.title}}</label>
+                                                                <span class="pizza-price" id="pizzaprice {{pizza.id}}">{{ price.price|floatformat:"0" }} сум</span>
                                                             {% endif %}
-
                                                         {% endif %}
-                                                    {% endfor %}
-
-                                                    <!-- <input type="radio" id="{{ pizza.id }}-30sm" name="size_selector" value="2">
-                                                    <label for="{{ pizza.id }}-30sm">30см</label>
-                                                    <input type="radio" id="{{ pizza.id }}-25sm" name="size_selector" value="3" checked="">
-                                                    <label for="{{ pizza.id }}-25sm">25см</label> -->
-                                                </div>
-                                        </div>
-
-                                        <div class="pizza-pastry">
-                                                <div class="radio-group">
-                                                    <input type="radio" id="{{ pizza.id }}-thin" name="selector" value="1">
-                                                    <label for="{{ pizza.id }}-thin">Тонкое</label>
-                                                    <input type="radio" id="{{ pizza.id }}-traditional" name="selector" value="2" checked="">
-                                                    <label for="{{ pizza.id }}-traditional">Традиционное</label>
-                                                </div>
-                                        </div>
-                                        <div class="pizza-buy">
-                                            <button class="add-to-cart" id="addToCart">В корзину</button>
-                                            {% for price in pricesFS %}
                                                     
-                                                {% if price.pizza.id == pizza.id %}
-                                                    {% if price.size.id == 3 %}
-                                                        <span class="pizza-price" id="pizzaprice {{pizza.id}}">{{ price.price|floatformat:"0" }} сум</span>
-                                                    {% endif %}
-                                                {% endif %}
-                                            
-                                            {% endfor %}
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                    </div>
-                </form>
+                            </div>
+                        </form>
+                    {% endif %}
                 
                 {% endfor %}
 
@@ -267,53 +328,56 @@
                 НАПИТКИ:
             </h2>
             <div class="drinks" id="drinks">
-                {% for drink in drinks %}    
-                <form method="POST" class="post-form" id="{{drink.id}}" name="drink {{drink.id}}" >
-                <div class="drinks-card">
-                    <div class="drink-photo">
-                        <img src="/media/{{drink.picture}}" alt="">
-                    </div>
-                    <h3 class="drinks-name">{{drink.title}}</h3>
+                {% for drink in drinks %} 
+                    {% if drink.active %}  
+                        <form method="POST" class="post-form" id="{{drink.id}}" name="drink {{drink.id}}" >
+                        <div class="drinks-card">
+                            <div class="drink-photo">
+                                <img src="/media/{{drink.picture}}" alt="">
+                            </div>
+                            <h3 class="drinks-name">{{drink.title}}</h3>
 
-                    {% csrf_token %}
-                    {% for price in pricesFV %}
-
-                        {% if price.drink.id == drink.id %}
-                            {% if price.volume.id == 1 %}
-                                <span class="drinks-price" id="drinkprice {{drink.id}}">{{ price.price|floatformat:"0" }} сум</span>
-                            {% endif %}
-                        {% endif %}
-                    
-                    {% endfor %}
-                    
-                    <div class="drinks-size">
-                        <div class="radio-group">
-                            <!-- {% for volume in drink.available.all %}
-                                {% if volume.id == m_volume|length %}
-                                    <input type="radio" id="drink {{drink.id}} {{volume.id}} " name="volume_selector" checked="">
-                                    <label for="drink {{drink.id}} {{volume.id}}">{{volume.title}}</label>
-                                {% else %}
-                                    <input type="radio" id="drink {{drink.id}} {{volume.id}}" name="volume_selector">
-                                    <label for="drink {{drink.id}} {{volume.id}}">{{volume.title}}</label>
-                                {% endif %}
-                            {% endfor %} -->
-
+                            {% csrf_token %}
                             {% for price in pricesFV %}
-                            
+
                                 {% if price.drink.id == drink.id %}
                                     {% if price.volume.id == 1 %}
-                                        <input type="radio" id="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}" name="volume_selector" value="{{price.size.id}}" checked="">
-                                        <label for="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}">{{price.volume.title}}</label>
-                                    {% else %}
-                                        <input type="radio" id="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}" name="volume_selector" value="{{price.size.id}}">
-                                        <label for="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}">{{price.volume.title}}</label>
+                                        <span class="drinks-price" id="drinkprice {{drink.id}}">{{ price.price|floatformat:"0" }} сум</span>
                                     {% endif %}
                                 {% endif %}
+                            
                             {% endfor %}
+                            
+                            <div class="drinks-size">
+                                <div class="radio-group">
+                                    <!-- {% for volume in drink.available.all %}
+                                        {% if volume.id == m_volume|length %}
+                                            <input type="radio" id="drink {{drink.id}} {{volume.id}} " name="volume_selector" checked="">
+                                            <label for="drink {{drink.id}} {{volume.id}}">{{volume.title}}</label>
+                                        {% else %}
+                                            <input type="radio" id="drink {{drink.id}} {{volume.id}}" name="volume_selector">
+                                            <label for="drink {{drink.id}} {{volume.id}}">{{volume.title}}</label>
+                                        {% endif %}
+                                    {% endfor %} -->
+
+                                    {% for price in pricesFV %}
+                                    
+                                        {% if price.drink.id == drink.id %}
+                                            {% if price.volume.id == 3 %}
+                                                <input type="radio" id="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}" name="volume_selector" value="{{price.volume.id}}" checked="">
+                                                <label for="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}">{{price.volume.title}}</label>
+                                            {% else %}
+                                                <input type="radio" id="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}" name="volume_selector" value="{{price.volume.id}}">
+                                                <label for="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}">{{price.volume.title}}</label>
+                                            {% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <button type="submit" class="add-to-cart">В корзину</button>
                         </div>
-                    </div>
-                    <button type="submit" class="add-to-cart">В корзину</button>
-                </div>
+                        </form>
+                    {% endif %}
                 {% endfor %}
                 
             </div>
@@ -323,20 +387,22 @@
                 Закуски:
             </h2>
             <div class="snacks" id="snacks">
-                {% for snack in snacks %}    
-                <form method="POST" class="post-form" id="{{snack.id}}" name="snack {{snack.id}}" >
-                    <div class="snacks-card">
-                        <div class="snacks-photo">
-                                
-                            <img src="/media/{{snack.picture}}" alt="">
-                        </div>
-                        <h3 class="snacks-name">{{snack.title}}</h3>
-                        <div class="snacks-actions">
-                            <button type="submit" class="add-to-cart">В корзину</button>
-                            <span class="snacks-price">{{ snack.price|floatformat:"0" }} сум</span>
-                        </div>
-                    </div>
-                </form>
+                {% for snack in snacks %} 
+                    {% if snack.active %} 
+                        <form method="POST" class="post-form" id="{{snack.id}}" name="snack {{snack.id}}" >
+                            <div class="snacks-card">
+                                <div class="snacks-photo">
+                                        
+                                    <img src="/media/{{snack.picture}}" alt="">
+                                </div>
+                                <h3 class="snacks-name">{{snack.title}}</h3>
+                                <div class="snacks-actions">
+                                    <button type="submit" class="add-to-cart">В корзину</button>
+                                    <span class="snacks-price">{{ snack.price|floatformat:"0" }} сум</span>
+                                </div>
+                            </div>
+                        </form>
+                    {% endif %}
                 {% endfor %}
                 
             </div>
@@ -346,22 +412,24 @@
                 Соусы:
             </h2>
             <div class="sauces" id="sauces">
-                {% for sauce in sauces %}    
-                <form method="POST" class="post-form" id="{{sauce.id}}" name="sauce {{sauce.id}}" >
-                    <div class="sauces-card">
-                        <div class="sauces-photo">
-                                
-                            <img src="/media/{{sauce.picture}}" alt="">
-                        </div>
-                        <h3 class="sauces-name">
-                            {{ sauce.title }}
-                        </h3>
-                        <div class="sauces-actions">
-                            <button type="submit" class="add-to-cart">В корзину</button>
-                            <span class="sauces-price">{{ sauce.price|floatformat:"0" }} сум</span>
-                        </div>
-                    </div>
-                </form>
+                {% for sauce in sauces %}  
+                    {% if sauce.active %} 
+                        <form method="POST" class="post-form" id="{{sauce.id}}" name="sauce {{sauce.id}}" >
+                            <div class="sauces-card">
+                                <div class="sauces-photo">
+                                        
+                                    <img src="/media/{{sauce.picture}}" alt="">
+                                </div>
+                                <h3 class="sauces-name">
+                                    {{ sauce.title }}
+                                </h3>
+                                <div class="sauces-actions">
+                                    <button type="submit" class="add-to-cart">В корзину</button>
+                                    <span class="sauces-price">{{ sauce.price|floatformat:"0" }} сум</span>
+                                </div>
+                            </div>
+                        </form>
+                    {% endif %}
                 {% endfor %}
                 
             </div>
@@ -370,20 +438,22 @@
                 Сеты:
             </h2>
             <div class="sets-slider" id="sets">
-            {% for set in sets %}    
-            <form method="POST" class="post-form" id="{{set.id}}" name="set {{set.id}}" >
+            {% for set in sets %} 
+                {% if set.active %} 
+                    <form method="POST" class="post-form" id="{{set.id}}" name="set {{set.id}}" >
 
-                <div>
-                    <img src="/media/{{set.picture}}">
-                    <div class="sets-text">
-                        <h3 class="sets-name">{{ set.title }}</h3>
-                        <div class="sets-actions">
-                            <button type="submit" class="add-to-cart">В корзину</button>
-                            <span class="sets-price">{{ set.price|floatformat:"0" }} сум</span>
+                        <div>
+                            <img src="/media/{{set.picture}}">
+                            <div class="sets-text">
+                                <h3 class="sets-name">{{ set.title }}</h3>
+                                <div class="sets-actions">
+                                    <button type="submit" class="add-to-cart">В корзину</button>
+                                    <span class="sets-price">{{ set.price|floatformat:"0" }} сум</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </form>
+                    </form>
+                {% endif %}
             {% endfor %}
                 
             </div>

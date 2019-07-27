@@ -165,6 +165,8 @@ class AnonymousUser(models.Model):
 
 """
 class TempPizza(models.Model):
+    elder_pizza = models.ForeignKey(Pizza, on_delete=models.CASCADE, default=1)
+
     picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
 
     title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
@@ -181,6 +183,9 @@ class TempPizza(models.Model):
         return str(self.title)
 
 class TempDrink(models.Model):
+
+    elder_drink = models.ForeignKey(Drink, on_delete=models.CASCADE, default=1)
+
     picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
 
     title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
@@ -192,17 +197,48 @@ class TempDrink(models.Model):
     def __str__(self):
         return str(self.title)
 
+class TempSnack(models.Model):
+    picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
+
+    title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
+
+    price = models.FloatField("Цена", default=0)
+
+    def __str__(self):
+        return str(self.title)
+
+class TempSauce(models.Model):
+    picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
+
+    title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
+
+    price = models.FloatField("Цена", default=0)
+
+    def __str__(self):
+        return str(self.title)
+
+class TempSet(models.Model):
+    picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
+
+    title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
+
+    price = models.FloatField("Цена", default=0)
+
+    def __str__(self):
+        return str(self.title)
+
 class TempOrder(models.Model):
     title = models.CharField("ID", max_length=511, default="", unique=False, null=False)
     user = models.ForeignKey(AnonymousUser, on_delete=models.CASCADE)  
 
     pizzas = models.ManyToManyField(TempPizza) 
     drinks = models.ManyToManyField(TempDrink)
-    snacks = models.ManyToManyField(Snack)
-    sauces = models.ManyToManyField(Sauce)
-    sets = models.ManyToManyField(Set)
+    snacks = models.ManyToManyField(TempSnack)
+    sauces = models.ManyToManyField(TempSauce)
+    sets = models.ManyToManyField(TempSet, related_name="sets")
 
     def __str__(self):
         return str(self.title)
+        
 
 

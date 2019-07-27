@@ -31,6 +31,19 @@ $.ajaxSetup({
     }
 });
 
+$(document).ready(function(){
+    console.log("Trying to get data");
+    $.get("getmytemp/", function(data, status){
+        var data1 = JSON.stringify(data, null, 2);
+        if (data1.includes("not exsists")){
+            console.log("Data: " + data + "\nStatus: " + status);
+        } else {
+            var obj = JSON.parse(data1)
+            console.log(obj.pizzas[0].title)
+        }
+      });
+});
+
 // Submit post on submit
 // $('#post-form').on('submit', function(event){
 //     console.log(event.target.name)
@@ -41,13 +54,13 @@ $.ajaxSetup({
 
 
 
-// $('form').on('submit', function(event){
-//     event.preventDefault();
+$('form').on('submit', function(event){
+    event.preventDefault();
     
-//     // console.log("form submitted!")  // sanity check
-//     create_post(event);
+    // console.log("form submitted!")  // sanity check
+    create_post(event);
 
-// });
+});
 
 $('input').change(function(event){
     if (event.target.name == "size_selector"){
@@ -61,6 +74,146 @@ $('input').change(function(event){
     
 });
 
+$("button").click(function(event){
+    var sender = event.target.id
+    console.log(sender)
+    if (sender.includes("remove")){
+        if (sender.includes("pizza")){
+            var father = document.getElementById(sender.replace("remove ", ""));
+            father.hidden=true;
+
+            var pizza_num = sender.split(" ")[2]
+            var order_num = sender.split(" ")[3]
+
+            $.ajax({
+            url : "remove/", // the endpoint
+            type : "POST", // http method
+            data : { object : "pizza", number : pizza_num, order_number : order_num}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+        }
+        
+    } else if (sender.includes("remove")){
+        if (sender.includes("drink")){
+            var drink_num = sender.split(" ")[1]
+            var order_num = sender.split(" ")[2]
+
+            $.ajax({
+            url : "remove/"+num+"/", // the endpoint
+            type : "POST", // http method
+            data : { object : "drink", number : drink_num, order_number : order_num}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+        }
+        
+    } else if (sender.includes("remove")){
+        if (sender.includes("snack")){
+            var snack_num = sender.split(" ")[1]
+            var order_num = sender.split(" ")[2]
+
+            $.ajax({
+            url : "remove/"+num+"/", // the endpoint
+            type : "POST", // http method
+            data : { object : "snack", number : snack_num, order_number : order_num}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+        }
+        
+    } else if (sender.includes("remove")){
+        if (sender.includes("sauce")){
+            var sauce_num = sender.split(" ")[1]
+            var order_num = sender.split(" ")[2]
+
+            $.ajax({
+            url : "remove/"+num+"/", // the endpoint
+            type : "POST", // http method
+            data : { object : "sauce", number : sauce_num, order_number : order_num}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+        }
+        
+    } else if (sender.includes("remove")){
+        if (sender.includes("set")){
+            var set_num = sender.split(" ")[1]
+            var order_num = sender.split(" ")[2]
+
+            $.ajax({
+            url : "remove/"+num+"/", // the endpoint
+            type : "POST", // http method
+            data : { object : "set", number : set_num, order_number : order_num}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+        }
+        
+    }
+  });
+
+
 
 function change_price(event, name){
     var sender = event.target.id;
@@ -70,13 +223,12 @@ function change_price(event, name){
 
 // AJAX for posting
 function create_post(event) {
-    console.log("Trying to get data");
-    $.get("getmytemp/", function(data, status){
-        console.log("Data: " + data + "\nStatus: " + status);
-      });
+    
 
     var size_selector = $("input[name='size_selector']:checked").val();
     var selector = $("input[name='selector']:checked").val();
+    var volume_selector = $("input[name='volume_selector']:checked").val();
+
     var sender = event.target.name
 
     if (sender.includes("pizza")) {
@@ -117,7 +269,7 @@ function create_post(event) {
         $.ajax({
             url : "temp/"+num+"/", // the endpoint
             type : "POST", // http method
-            data : { object : "drink",  volume : selector}, // data sent with the post request
+            data : { object : "drink",  volume : volume_selector}, // data sent with the post request
 
             // handle a successful response
             success : function(json) {
