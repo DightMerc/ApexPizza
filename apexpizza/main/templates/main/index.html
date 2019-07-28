@@ -94,7 +94,7 @@
                         </div>
                         {% endfor %}
                         {% for drink in cart.drinks.all %}
-                        <div class="header-cart-product">
+                        <div class="header-cart-product" id="drink {{ drink.id }} {{ cart.id }}">
                             <button type="button" class="header-cart-product-remove">
                                 <i class="fa fa-times" aria-hidden="true" id="remove drink {{ drink.id }} {{ cart.id }}"></i>
                             </button>
@@ -112,7 +112,7 @@
                         </div>
                         {% endfor %}
                         {% for snack in cart.snacks.all %}
-                        <div class="header-cart-product">
+                        <div class="header-cart-product" id="snack {{ snack.id }} {{ cart.id }}">
                             <button type="button" class="header-cart-product-remove" >
                                 <i class="fa fa-times" aria-hidden="true" id="remove snack {{ snack.id }} {{ cart.id }}"></i>
                             </button>
@@ -129,7 +129,7 @@
                         </div>
                         {% endfor %}
                         {% for sauce in cart.sauces.all %}
-                        <div class="header-cart-product">
+                        <div class="header-cart-product" id="sauce {{ sauce.id }} {{ cart.id }}">
                             <button type="button" class="header-cart-product-remove" >
                                 <i class="fa fa-times" aria-hidden="true" id="remove sauce {{ sauce.id }} {{ cart.id }}" ></i>
                             </button>
@@ -146,8 +146,8 @@
                         </div>
                         {% endfor %}
                         {% for set in cart.sets.all %}
-                        <div class="header-cart-product">
-                            <button type="button" class="header-cart-product-remove"></button>
+                        <div class="header-cart-product" id="set {{ set.id }} {{ cart.id }}">
+                            <button type="button" class="header-cart-product-remove">
                                 <i class="fa fa-times" aria-hidden="true" id="remove set {{ set.id }} {{ cart.id }}"></i>
                             </button>
                             <h5>{{ set.title }}</h5>

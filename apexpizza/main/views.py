@@ -94,6 +94,46 @@ def removeProduct(request):
          order.pizzas.remove(pizza)
 
          return HttpResponse("Pizza removed from order " + str(order_num))
+      elif request.POST.get("object") == "drink":
+         drink_num = int(request.POST.get("number"))
+         order_num = int(request.POST.get("order_number"))
+
+         drink = get_object_or_404(TempDrink, pk=drink_num)
+         order = get_object_or_404(TempOrder, pk=order_num)
+
+         order.drinks.remove(drink)
+
+         return HttpResponse("Drink removed from order " + str(order_num))
+      elif request.POST.get("object") == "snack":
+         snack_num = int(request.POST.get("number"))
+         order_num = int(request.POST.get("order_number"))
+
+         snack = get_object_or_404(TempSnack, pk=snack_num)
+         order = get_object_or_404(TempOrder, pk=order_num)
+
+         order.snacks.remove(snack)
+
+         return HttpResponse("Snack removed from order " + str(order_num))
+      elif request.POST.get("object") == "sauce":
+         sauce_num = int(request.POST.get("number"))
+         order_num = int(request.POST.get("order_number"))
+
+         sauce = get_object_or_404(TempSauce, pk=sauce_num)
+         order = get_object_or_404(TempOrder, pk=order_num)
+
+         order.sauces.remove(sauce)
+
+         return HttpResponse("Sauce removed from order " + str(order_num))
+      elif request.POST.get("object") == "set":
+         set_num = int(request.POST.get("number"))
+         order_num = int(request.POST.get("order_number"))
+
+         _set = get_object_or_404(TempSet, pk=set_num)
+         order = get_object_or_404(TempOrder, pk=order_num)
+
+         order.sets.remove(_set)
+
+         return HttpResponse("Set removed from order " + str(order_num))
          
 
 def temp_order(request, pk):

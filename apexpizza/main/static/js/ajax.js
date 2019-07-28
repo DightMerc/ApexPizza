@@ -104,15 +104,15 @@ $("button").click(function(event){
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
             }
         });
-        }
-        
-    } else if (sender.includes("remove")){
-        if (sender.includes("drink")){
-            var drink_num = sender.split(" ")[1]
-            var order_num = sender.split(" ")[2]
+        }   else if (sender.includes("drink")){
+            var father = document.getElementById(sender.replace("remove ", ""));
+            father.hidden=true;
+
+            var drink_num = sender.split(" ")[2]
+            var order_num = sender.split(" ")[3]
 
             $.ajax({
-            url : "remove/"+num+"/", // the endpoint
+            url : "remove/", // the endpoint
             type : "POST", // http method
             data : { object : "drink", number : drink_num, order_number : order_num}, // data sent with the post request
 
@@ -130,15 +130,16 @@ $("button").click(function(event){
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
             }
         });
-        }
-        
-    } else if (sender.includes("remove")){
-        if (sender.includes("snack")){
-            var snack_num = sender.split(" ")[1]
-            var order_num = sender.split(" ")[2]
+        }   else if (sender.includes("snack")){
+            var father = document.getElementById(sender.replace("remove ", ""));
+            father.hidden=true;
+
+            var snack_num = sender.split(" ")[2]
+            var order_num = sender.split(" ")[3]
+            
 
             $.ajax({
-            url : "remove/"+num+"/", // the endpoint
+            url : "remove/", // the endpoint
             type : "POST", // http method
             data : { object : "snack", number : snack_num, order_number : order_num}, // data sent with the post request
 
@@ -156,15 +157,15 @@ $("button").click(function(event){
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
             }
         });
-        }
-        
-    } else if (sender.includes("remove")){
-        if (sender.includes("sauce")){
-            var sauce_num = sender.split(" ")[1]
-            var order_num = sender.split(" ")[2]
+        }   else if (sender.includes("sauce")){
+            var father = document.getElementById(sender.replace("remove ", ""));
+            father.hidden=true;
+
+            var sauce_num = sender.split(" ")[2]
+            var order_num = sender.split(" ")[3]
 
             $.ajax({
-            url : "remove/"+num+"/", // the endpoint
+            url : "remove/", // the endpoint
             type : "POST", // http method
             data : { object : "sauce", number : sauce_num, order_number : order_num}, // data sent with the post request
 
@@ -182,15 +183,15 @@ $("button").click(function(event){
                 console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
             }
         });
-        }
-        
-    } else if (sender.includes("remove")){
-        if (sender.includes("set")){
-            var set_num = sender.split(" ")[1]
-            var order_num = sender.split(" ")[2]
+        }   else if (sender.includes("set")){
+            var father = document.getElementById(sender.replace("remove ", ""));
+            father.hidden=true;
+            
+            var set_num = sender.split(" ")[2]
+            var order_num = sender.split(" ")[3]
 
             $.ajax({
-            url : "remove/"+num+"/", // the endpoint
+            url : "remove/", // the endpoint
             type : "POST", // http method
             data : { object : "set", number : set_num, order_number : order_num}, // data sent with the post request
 
