@@ -68,9 +68,6 @@ def base(request):
    else:
       temp_order = ""
 
-            
-      
-
 
 
 
@@ -202,7 +199,7 @@ def temp_order(request, pk):
             if order.user.id == user_num:
                temp_order = get_object_or_404(TempOrder, pk=order.id)
                temp_order.pizzas.add(get_object_or_404(TempPizza, pk=temp_pizza.id))
-               return HttpResponse("Added successfully to exist order "  + str(user_num) + " " + str(order.id) + " " + str(order.user.id))
+               return HttpResponse(str(temp_pizza.id) + " " + str(order.id) + " "  + str(temp_pizza.doughType) + " " + str(temp_pizza.size))
                break
       
          order_quantity = len(TempOrder.objects.all())

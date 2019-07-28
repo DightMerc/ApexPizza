@@ -74,7 +74,7 @@
                         </div>
                     </div>
                     <a href="cart.html" class="btn-header-cart">Корзина</a>
-                    <div class="header-cart-products">
+                    <div class="header-cart-products" id="header_cart">
                         {% for pizza in cart.pizzas.all %}
                         <div class="header-cart-product" id="pizza {{ pizza.id }} {{ cart.id }}">
                             <button type="button" class="header-cart-product-remove">
@@ -163,7 +163,7 @@
                         </div>
                         {% endfor %}
                         
-                        <div class="header-cart-products-sum">
+                        <div class="header-cart-products-sum" id="cart_cost">
                             <span>Сумма заказа:</span>
                             <span>{{ cart_price|floatformat:"0" }} сум</span>
                             
