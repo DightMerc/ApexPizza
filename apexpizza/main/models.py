@@ -167,6 +167,8 @@ class AnonymousUser(models.Model):
 class TempPizza(models.Model):
     elder_pizza = models.ForeignKey(Pizza, on_delete=models.CASCADE, default=1)
 
+    quantity = models.PositiveIntegerField(default=1)
+
     picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
 
     title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
@@ -186,6 +188,8 @@ class TempDrink(models.Model):
 
     elder_drink = models.ForeignKey(Drink, on_delete=models.CASCADE, default=1)
 
+    quantity = models.PositiveIntegerField(default=1)
+
     picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
 
     title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
@@ -200,6 +204,8 @@ class TempDrink(models.Model):
 class TempSnack(models.Model):
     picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
 
+    quantity = models.PositiveIntegerField(default=1)
+
     title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
 
     price = models.FloatField("Цена", default=0)
@@ -209,6 +215,8 @@ class TempSnack(models.Model):
 
 class TempSauce(models.Model):
     picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
+
+    quantity = models.PositiveIntegerField(default=1)
 
     title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
 
@@ -220,9 +228,30 @@ class TempSauce(models.Model):
 class TempSet(models.Model):
     picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
 
+    quantity = models.PositiveIntegerField(default=1)
+
     title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
 
     price = models.FloatField("Цена", default=0)
+
+    def __str__(self):
+        return str(self.title)
+
+class Present(models.Model):
+
+    title = models.CharField("ID", max_length=511, default="", unique=False, null=False)
+    price = models.FloatField("Цена", default=0)
+
+    def __str__(self):
+        return str(self.title)
+
+class TempPresent(models.Model):
+
+    title = models.CharField("ID", max_length=511, default="", unique=False, null=False)
+    price = models.FloatField("Цена", default=0)
+
+    quantity = models.PositiveIntegerField(default=1)
+
 
     def __str__(self):
         return str(self.title)
@@ -236,9 +265,46 @@ class TempOrder(models.Model):
     snacks = models.ManyToManyField(TempSnack)
     sauces = models.ManyToManyField(TempSauce)
     sets = models.ManyToManyField(TempSet, related_name="sets")
+    presents = models.ManyToManyField(TempPresent)
 
     def __str__(self):
         return str(self.title)
+
+class Discount(models.Model):
+    title = models.TextField()
+    picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
+
+    active = models.BooleanField("Активен", default=False)
+
+
+    description = models.TextField()
+
+    def __str__(self):
+        return str(self.title)
+
+class Vacancy(models.Model):
+    title = models.CharField("ID", max_length=511, default="", unique=False, null=False)
+    picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
+
+    active = models.BooleanField("Активен", default=False)
+
+
+    start = models.CharField("Начало рабочего дня", max_length=511, default="", unique=False, null=False)
+    end = models.CharField("Конец рабочего дня", max_length=511, default="", unique=False, null=False)
+
+    dinner_start = models.CharField("Начало обеденного времени", max_length=511, default="", unique=False, null=False)
+    dinner_end = models.CharField("Конец обеденного времени", max_length=511, default="", unique=False, null=False)
+
+    salary = models.PositiveIntegerField()
+    year = models.PositiveIntegerField()
+
+
+
+
+    def __str__(self):
+        return str(self.title)
+
+
         
 
 

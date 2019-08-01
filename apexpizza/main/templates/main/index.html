@@ -50,22 +50,22 @@
                     <li><a href="#snacks">Закуски</a></li>
                     <li><a href="#sauces">Соусы</a></li>
                     <li><a href="#sets">Сеты</a></li>
-                    <li><a href="discounts.html">Акции</a></li>
-                    <li><a href="vacancy.html">Вакансии</a></li>
-                    <li><a href="blog.html">Блог</a></li>
-                    <li><a href="contact.html">Контакты</a></li>
-                    <li><a href="about.html">О нас</a></li>
+                    <li><a href="discounts">Акции</a></li>
+                    <li><a href="/vacancy/1">Вакансии</a></li>
+                    <li><a href="/blog">Блог</a></li>
+                    <li><a href="/contact">Контакты</a></li>
+                    <li><a href="/about">О нас</a></li>
                 </ul>
             </nav>
             <div class="header-bottom-right">
                 <div class="header-cart">
                     <div class="header-card-total">
                         <div class="header-cart-sum">
-                            <span>{{ cart_price|floatformat:"0" }}</span>
+                            <span id="cart_price">{{ cart_price|floatformat:"0" }}</span>
                             <span>сум</span>
                         </div>
                         <div class="header-cart-number">
-                            <span>{{ cart_num }}</span>
+                            <span id="cart_ammount">{{ total_amount }}</span>
                             <span>товара</span>
 
                             <span class="header-cart-toggler">
@@ -73,7 +73,7 @@
                             </span>
                         </div>
                     </div>
-                    <a href="cart.html" class="btn-header-cart">Корзина</a>
+                    <a href="cart/" class="btn-header-cart">Корзина</a>
                     <div class="header-cart-products" id="header_cart">
                         {% for pizza in cart.pizzas.all %}
                         <div class="header-cart-product" id="pizza {{ pizza.id }} {{ cart.id }}">
@@ -83,11 +83,11 @@
                             <h5>{{ pizza.title }}</h5>
                             <span>{{ pizza.doughType }}, {{ pizza.size }}</span>
                             <div class="amount-controllers">
-                                <button class="amount-remove" type="button" name="button">
+                                <button class="amount-remove" type="button" name="button" id="minus pizza {{ pizza.id }} {{ cart.id }}" onclick="change_amount(this.id)">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" name="name" value="0">
-                                <button class="amount-add" type="button" name="button">
+                                <input type="text" name="name" value="{{pizza.quantity}}" id="input_value pizza {{ pizza.id }}">
+                                <button class="amount-add" type="button" name="button" id="plus pizza {{ pizza.id }} {{ cart.id }}" onclick="change_amount(this.id)">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -104,7 +104,7 @@
                                 <button class="amount-remove" type="button" name="button">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" name="name" value="0">
+                                <input type="text" name="name" value="{{pizza.quantity}}" id="input_value drink {{ drink.id }}">
                                 <button class="amount-add" type="button" name="button">
                                     <i class="fa fa-plus"></i>
                                 </button>
@@ -118,11 +118,11 @@
                             </button>
                             <h5>{{ snack.title }}</h5>
                             <div class="amount-controllers">
-                                <button class="amount-remove" type="button" name="button">
+                                <button class="amount-remove" type="button" name="button" id="minus snack {{ snack.id }} {{ cart.id }}">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" name="name" value="0">
-                                <button class="amount-add" type="button" name="button">
+                                <input type="text" name="name" value="{{pizza.quantity}}" id="input_value snack {{ snack.id }}">
+                                <button class="amount-add" type="button" name="button" id="plus snack {{ snack.id }} {{ cart.id }}">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -135,11 +135,11 @@
                             </button>
                             <h5>{{ sauce.title }}</h5>
                             <div class="amount-controllers">
-                                <button class="amount-remove" type="button" name="button">
+                                <button class="amount-remove" type="button" name="button" id="minus sauce {{ sauce.id }} {{ cart.id }}">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" name="name" value="0">
-                                <button class="amount-add" type="button" name="button">
+                                <input type="text" name="name" value="{{pizza.quantity}}" id="input_value sauce {{ sauce.id }}">
+                                <button class="amount-add" type="button" name="button" id="plus sauce {{ sauce.id }} {{ cart.id }}">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -152,11 +152,11 @@
                             </button>
                             <h5>{{ set.title }}</h5>
                             <div class="amount-controllers">
-                                <button class="amount-remove" type="button" name="button">
+                                <button class="amount-remove" type="button" name="button" id="minus set {{ set.id }} {{ cart.id }}">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" name="name" value="0">
-                                <button class="amount-add" type="button" name="button">
+                                <input type="text" name="name" value="{{pizza.quantity}}" id="input_value set {{ set.id }}">
+                                <button class="amount-add" type="button" name="button" id="plus set {{ set.id }} {{ cart.id }}">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -216,7 +216,7 @@
         </div>
         <a href="" class="header-mobile-cart">
             <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-            <span class="header-mobile-cart-number">12</span>
+            <span class="header-mobile-cart-number" id="mobile_amount">{{ total_amount }}</span>
         </a>
     </header>
     <!-- Header Mobile end  -->
@@ -242,6 +242,7 @@
                 ПИЦЦА:
             </h2>
             {{number}}
+            {{total_amount}}
 
 
             <div class="pizza" id="pizza">
@@ -258,7 +259,7 @@
                                     
                                         <div class="pizza-details">
                                             <div class="pizza-info">
-                                                <h3 class="pizza-name">{{pizza.title}}</h3>
+                                                <h3 class="pizza-name" id="pizza-name {{pizza.id}}">{{pizza.title}}</h3>
                                                 <div class="pizza-comp">
                                                     {% for topping in pizza.toppings.all %}
                                                     <input type="checkbox" class="pizza-comp-option" name="toppings{{pizza.id}}" value={{topping.id}} checked="">
@@ -335,7 +336,7 @@
                             <div class="drink-photo">
                                 <img src="/media/{{drink.picture}}" alt="">
                             </div>
-                            <h3 class="drinks-name">{{drink.title}}</h3>
+                            <h3 class="drinks-name" id="drinks-name {{drink.id}}">{{drink.title}}</h3>
 
                             {% csrf_token %}
                             {% for price in pricesFV %}
@@ -395,7 +396,7 @@
                                         
                                     <img src="/media/{{snack.picture}}" alt="">
                                 </div>
-                                <h3 class="snacks-name">{{snack.title}}</h3>
+                                <h3 class="snacks-name" id="snacks-name {{snack.id}}">{{snack.title}}</h3>
                                 <div class="snacks-actions">
                                     <button type="submit" class="add-to-cart">В корзину</button>
                                     <span class="snacks-price">{{ snack.price|floatformat:"0" }} сум</span>
@@ -420,7 +421,7 @@
                                         
                                     <img src="/media/{{sauce.picture}}" alt="">
                                 </div>
-                                <h3 class="sauces-name">
+                                <h3 class="sauces-name" id="sauces-name {{sauce.id}}">
                                     {{ sauce.title }}
                                 </h3>
                                 <div class="sauces-actions">
@@ -445,7 +446,7 @@
                         <div>
                             <img src="/media/{{set.picture}}">
                             <div class="sets-text">
-                                <h3 class="sets-name">{{ set.title }}</h3>
+                                <h3 class="sets-name" id="sets-name {{set.id}}">{{ set.title }}</h3>
                                 <div class="sets-actions">
                                     <button type="submit" class="add-to-cart">В корзину</button>
                                     <span class="sets-price">{{ set.price|floatformat:"0" }} сум</span>
@@ -455,6 +456,7 @@
                     </form>
                 {% endif %}
             {% endfor %}
+            
                 
             </div>
             <div class="home-about">

@@ -145,19 +145,27 @@ $(".header-mobile-menu ul").on("click", "a", function (event) {
 // This button will increment the value
 $('.qtyplus').click(function (e) {
     // Stop acting like a button
+
     e.preventDefault();
     // Get the field name
     fieldName = $(this).attr('field');
     // Get its current value
-    var currentVal = parseInt($('input[name=' + fieldName + ']').val());
+
+    var currentVal = parseInt(document.getElementById("quantity " + e.target.parentNode.id.replace("cart ", "")).value)
+
     // If is not undefined
     if (!isNaN(currentVal)) {
         // Increment
-        $('input[name=' + fieldName + ']').val(currentVal + 1);
+        document.getElementById("quantity " + e.target.parentNode.id.replace("cart ","")).value = currentVal + 1
+        var data = "plus " + e.target.parentNode.id.replace("cart ", "")
+        change_amount(data, false)
+        
     } else {
         // Otherwise put a 0 there
-        $('input[name=' + fieldName + ']').val(0);
+        document.getElementById("quantity " + e.target.parentNode.id.replace("cart ","")).value = 0
+        
     }
+    
 });
 // This button will decrement the value till 0
 $(".qtyminus").click(function (e) {
@@ -166,15 +174,21 @@ $(".qtyminus").click(function (e) {
     // Get the field name
     fieldName = $(this).attr('field');
     // Get its current value
-    var currentVal = parseInt($('input[name=' + fieldName + ']').val());
+    var currentVal = parseInt(document.getElementById("quantity " + e.target.parentNode.id.replace("cart ", "")).value)
+    
+    
     // If it isn't undefined or its greater than 0
     if (!isNaN(currentVal) && currentVal > 0) {
         // Decrement one
-        $('input[name=' + fieldName + ']').val(currentVal - 1);
+        document.getElementById("quantity " + e.target.parentNode.id.replace("cart ","")).value = currentVal - 1
+        var data = "minus " + e.target.parentNode.id.replace("cart ", "")
+        change_amount(data, false)
+        
     } else {
         // Otherwise put a 0 there
-        $('input[name=' + fieldName + ']').val(0);
+        document.getElementById("quantity " + e.target.parentNode.id.replace("cart ","")).value = 0
     }
+    
 });
 
 $('.cart-rec').owlCarousel({
