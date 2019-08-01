@@ -305,6 +305,18 @@ class Vacancy(models.Model):
         return str(self.title)
 
 
+class BlogPost(models.Model):
+    title = models.TextField()
+    picture = models.ImageField(blank=True, null=True, upload_to="pictures/")
+
+    active = models.BooleanField("Активен", default=False)
+
+
+    body = models.TextField()
+
+    def __str__(self):
+        return str(self.title)
+
         
 
 

@@ -260,17 +260,21 @@
                     {% endfor %}
                     
                 </div>
+                
                 <ul class="pagination">
                     
-                    <li><a href="#">«</a></li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="">...</a></li>
-                    <li><a href="#">6</a></li>
-                    <li><a class="active" href="#">7</a></li>
-                    <li><a href="#">8</a></li>
-                    <li><a href="#">...</a></li>
-                    <li><a href="#">27</a></li>
-                    <li><a href="#">»</a></li>
+                    <li><a href="{{ prev }}">«</a></li>
+                    
+                    {% for a in page_count %}
+                        {% if a == current_page %}
+                            <li><a class="active" href="{{ a }}">{{ a }}</a></li>
+                        {% else %}
+                            <li><a href="{{ a }}">{{ a }}</a></li>
+                        {% endif %}
+                        
+
+                    {% endfor %}
+                    <li><a href="{{ next }}">»</a></li>
                 </ul>
             </div>
         </div>

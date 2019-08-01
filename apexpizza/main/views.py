@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Pizza, AnonymousUser, TempOrder, TempPizza, Size, DoughType, Topping, Drink, TempDrink, Volume, PriceForSize, PriceForVolume
 from .models import Snack, Sauce, Set
-from .models import TempSnack, TempSauce, TempSet, Present, TempPresent, Discount, Vacancy
+from .models import TempSnack, TempSauce, TempSet, Present, TempPresent, Discount, Vacancy, BlogPost
 import json
 
 from django.core.paginator import Paginator
@@ -700,9 +700,37 @@ def vacancy_view(request, pk):
    pizzas = Pizza.objects.all()
    vacancies = Vacancy.objects.all()
 
-   page_count = vacancies.num_pages
 
    pagination = Paginator(vacancies, 4)
+
+   
+
+   page_count = []
+   a = 0
+   while a<pagination.num_pages:
+      a += 1
+      page_count.append(int(a))
+
+
+   if not pk in page_count:
+      return HttpResponse("Page not found", status=404)
+      
+   next_page = "#"
+   prev_page = "#"
+
+   if pk>1:
+      prev_page = str(pk - 1)
+   else:
+      prev_page = "#"
+
+   if pk + 1 > pagination.num_pages:
+      next_page = "#"
+   else:
+      next_page = str(pk + 1)
+
+
+   current_page = pk
+
 
    drinks = Drink.objects.all()
 
@@ -766,7 +794,111 @@ def vacancy_view(request, pk):
       for element in temp_order.sets.all():
          total_amount += element.quantity
 
-   return render(request, 'main/vacancy.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "vacancies": pagination.page(pk).object_list,"page_count":page_count})
+   return render(request, 'main/vacancy.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "vacancies": pagination.page(pk).object_list,"page_count":page_count, "current_page": current_page, "prev":prev_page, "next":next_page})
+
+
+
+def blog_view(request):
+
+   pizzas = Pizza.objects.all()
+
+   drinks = Drink.objects.all()
+
+
+   posts = BlogPost.objects.all()
+
+   pagination = Paginator(posts, 6)
+
+   
+
+   page_count = []
+   a = 0
+   while a<pagination.num_pages:
+      a += 1
+      page_count.append(int(a))
+
+
+   if not pk in page_count:
+      return HttpResponse("Page not found", status=404)
+      
+   next_page = "#"
+   prev_page = "#"
+
+   if pk>1:
+      prev_page = str(pk - 1)
+   else:
+      prev_page = "#"
+
+   if pk + 1 > pagination.num_pages:
+      next_page = "#"
+   else:
+      next_page = str(pk + 1)
+
+
+   current_page = pk
+
+
+   volume = Volume.objects.all()
+   pricesFS = PriceForSize.objects.all()
+   pricesFV = PriceForVolume.objects.all()
+
+   snacks = Snack.objects.all()
+   sauces = Sauce.objects.all()
+
+   sets = Set.objects.all()
+
+   user_num = request.session.get('user')
+   cart_price = 0
+   cart_num = 0
+
+   temp_orders = TempOrder.objects.all()
+   if len(temp_orders)>0:
+      for order in temp_orders:
+         if order.user.id == user_num:
+            temp_order = get_object_or_404(TempOrder, pk=order.id)
+
+      for pizza in order.pizzas.all():
+         cart_num += 1
+         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+
+      for drink in order.drinks.all():
+         cart_num += 1
+         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+
+      for snack in order.snacks.all():
+         cart_num += 1
+         cart_price += snack.price
+
+      for sauce in order.sauces.all():
+         cart_num += 1
+         cart_price += sauce.price
+
+      for _set in order.sets.all():
+         cart_num += 1
+         cart_price += _set.price
+   else:
+      temp_order = ""
+
+
+
+
+   num_visits=request.session.get('num_visits', 0)
+   request.session['num_visits'] = num_visits+1
+
+   total_amount = 0
+   if temp_order!="":
+      for element in temp_order.pizzas.all():
+         total_amount += element.quantity
+      for element in temp_order.drinks.all():
+         total_amount += element.quantity
+      for element in temp_order.snacks.all():
+         total_amount += element.quantity
+      for element in temp_order.sauces.all():
+         total_amount += element.quantity
+      for element in temp_order.sets.all():
+         total_amount += element.quantity
+
+   return render(request, 'main/blog.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "posts": posts, "next": next_page, "prev": prev_page, "current_page": current_page})
 
 
 
