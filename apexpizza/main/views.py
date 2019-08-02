@@ -798,7 +798,7 @@ def vacancy_view(request, pk):
 
 
 
-def blog_view(request):
+def blog_view(request, pk):
 
    pizzas = Pizza.objects.all()
 
@@ -898,7 +898,150 @@ def blog_view(request):
       for element in temp_order.sets.all():
          total_amount += element.quantity
 
-   return render(request, 'main/blog.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "posts": posts, "next": next_page, "prev": prev_page, "current_page": current_page})
+   return render(request, 'main/blog.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "posts": posts, "page_count":page_count, "next": next_page, "prev": prev_page, "current_page": current_page})
+
+
+def blog_view_detailed(request, pk):
+   pizzas = Pizza.objects.all()
+
+   drinks = Drink.objects.all()
+
+
+   post = BlogPost.objects.get(pk=pk)
+
+   volume = Volume.objects.all()
+   pricesFS = PriceForSize.objects.all()
+   pricesFV = PriceForVolume.objects.all()
+
+   snacks = Snack.objects.all()
+   sauces = Sauce.objects.all()
+
+   sets = Set.objects.all()
+
+   user_num = request.session.get('user')
+   cart_price = 0
+   cart_num = 0
+
+   temp_orders = TempOrder.objects.all()
+   if len(temp_orders)>0:
+      for order in temp_orders:
+         if order.user.id == user_num:
+            temp_order = get_object_or_404(TempOrder, pk=order.id)
+
+      for pizza in order.pizzas.all():
+         cart_num += 1
+         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+
+      for drink in order.drinks.all():
+         cart_num += 1
+         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+
+      for snack in order.snacks.all():
+         cart_num += 1
+         cart_price += snack.price
+
+      for sauce in order.sauces.all():
+         cart_num += 1
+         cart_price += sauce.price
+
+      for _set in order.sets.all():
+         cart_num += 1
+         cart_price += _set.price
+   else:
+      temp_order = ""
+
+
+
+
+   num_visits=request.session.get('num_visits', 0)
+   request.session['num_visits'] = num_visits+1
+
+   total_amount = 0
+   if temp_order!="":
+      for element in temp_order.pizzas.all():
+         total_amount += element.quantity
+      for element in temp_order.drinks.all():
+         total_amount += element.quantity
+      for element in temp_order.snacks.all():
+         total_amount += element.quantity
+      for element in temp_order.sauces.all():
+         total_amount += element.quantity
+      for element in temp_order.sets.all():
+         total_amount += element.quantity
+
+   return render(request, 'main/blog-single.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "post": post})
+
+def contact_view(request):
+   return render(request, 'main/index.html', {})
+
+def about_view(request):
+   pizzas = Pizza.objects.all()
+
+   drinks = Drink.objects.all()
+
+   volume = Volume.objects.all()
+   pricesFS = PriceForSize.objects.all()
+   pricesFV = PriceForVolume.objects.all()
+
+   snacks = Snack.objects.all()
+   sauces = Sauce.objects.all()
+
+   sets = Set.objects.all()
+
+   user_num = request.session.get('user')
+   cart_price = 0
+   cart_num = 0
+
+   temp_orders = TempOrder.objects.all()
+   if len(temp_orders)>0:
+      for order in temp_orders:
+         if order.user.id == user_num:
+            temp_order = get_object_or_404(TempOrder, pk=order.id)
+
+      for pizza in order.pizzas.all():
+         cart_num += 1
+         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+
+      for drink in order.drinks.all():
+         cart_num += 1
+         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+
+      for snack in order.snacks.all():
+         cart_num += 1
+         cart_price += snack.price
+
+      for sauce in order.sauces.all():
+         cart_num += 1
+         cart_price += sauce.price
+
+      for _set in order.sets.all():
+         cart_num += 1
+         cart_price += _set.price
+   else:
+      temp_order = ""
+
+
+
+
+   num_visits=request.session.get('num_visits', 0)
+   request.session['num_visits'] = num_visits+1
+
+   total_amount = 0
+   if temp_order!="":
+      for element in temp_order.pizzas.all():
+         total_amount += element.quantity
+      for element in temp_order.drinks.all():
+         total_amount += element.quantity
+      for element in temp_order.snacks.all():
+         total_amount += element.quantity
+      for element in temp_order.sauces.all():
+         total_amount += element.quantity
+      for element in temp_order.sets.all():
+         total_amount += element.quantity
+
+   return render(request, 'main/about.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount})
+
+
 
 
 

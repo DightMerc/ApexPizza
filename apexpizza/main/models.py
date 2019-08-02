@@ -311,8 +311,8 @@ class BlogPost(models.Model):
 
     active = models.BooleanField("Активен", default=False)
 
-
-    body = models.TextField()
+    show_body = models.TextField(default="")
+    body = models.TextField(default="")
 
     def __str__(self):
         return str(self.title)

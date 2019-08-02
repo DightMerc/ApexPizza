@@ -52,7 +52,7 @@
                     <li><a href="#sets">Сеты</a></li>
                     <li><a href="discounts">Акции</a></li>
                     <li><a href="/vacancy/1">Вакансии</a></li>
-                    <li><a href="/blog">Блог</a></li>
+                    <li><a href="/blog/1">Блог</a></li>
                     <li><a href="/contact">Контакты</a></li>
                     <li><a href="/about">О нас</a></li>
                 </ul>
@@ -73,7 +73,7 @@
                             </span>
                         </div>
                     </div>
-                    <a href="cart/" class="btn-header-cart">Корзина</a>
+                    <a href="/cart/" class="btn-header-cart">Корзина</a>
                     <div class="header-cart-products" id="header_cart">
                         {% for pizza in cart.pizzas.all %}
                         <div class="header-cart-product" id="pizza {{ pizza.id }} {{ cart.id }}">
@@ -191,16 +191,16 @@
         </div>
         <div class="header-mobile-menu">
             <ul>
-                <li><a href="#pizza">Пиццы</a></li>
-                <li><a href="#drinks">Напитки</a></li>
-                <li><a href="#snacks">Закуски</a></li>
-                <li><a href="#sauces">Соусы</a></li>
-                <li><a href="#sets">Сеты</a></li>
-                <li><a href="discounts.html">Акции</a></li>
-                <li><a href="vacancy.html">Вакансии</a></li>
-                <li><a href="blog.html">Блог</a></li>
-                <li><a href="contact.html">Контакты</a></li>
-                <li><a href="about.html">О нас</a></li>
+                <li><a href="/#pizza">Пиццы</a></li>
+                <li><a href="/#drinks">Напитки</a></li>
+                <li><a href="/#snacks">Закуски</a></li>
+                <li><a href="/#sauces">Соусы</a></li>
+                <li><a href="/#sets">Сеты</a></li>
+                <li><a href="/discounts">Акции</a></li>
+                <li><a href="/vacancy/1">Вакансии</a></li>
+                <li><a href="/blog/1">Блог</a></li>
+                <li><a href="/contact">Контакты</a></li>
+                <li><a href="/about">О нас</a></li>
             </ul>
             <div class="header-top-right">
                 <div class="header-delivery">

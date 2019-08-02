@@ -50,8 +50,8 @@
                         <li><a href="/#sauces">Соусы</a></li>
                         <li><a href="/#sets">Сеты</a></li>
                         <li><a href="/discounts">Акции</a></li>
-                        <li><a href="/vacancy">Вакансии</a></li>
-                        <li><a href="/blog">Блог</a></li>
+                        <li><a href="/vacancy/1">Вакансии</a></li>
+                        <li><a href="/blog/1">Блог</a></li>
                         <li><a href="/contact">Контакты</a></li>
                         <li><a href="/about">О нас</a></li>
                     </ul>
@@ -191,16 +191,16 @@
         </div>
         <div class="header-mobile-menu">
             <ul>
-                <li><a href="#pizza">Пиццы</a></li>
-                <li><a href="#drinks">Напитки</a></li>
-                <li><a href="#snacks">Закуски</a></li>
-                <li><a href="#sauces">Соусы</a></li>
-                <li><a href="#sets">Сеты</a></li>
-                <li><a href="discounts.html">Акции</a></li>
-                <li><a href="vacancy.html">Вакансии</a></li>
-                <li><a href="blog.html">Блог</a></li>
-                <li><a href="contact.html">Контакты</a></li>
-                <li><a href="about.html">О нас</a></li>
+                <li><a href="/#pizza">Пиццы</a></li>
+                <li><a href="/#drinks">Напитки</a></li>
+                <li><a href="/#snacks">Закуски</a></li>
+                <li><a href="/#sauces">Соусы</a></li>
+                <li><a href="/#sets">Сеты</a></li>
+                <li><a href="/discounts">Акции</a></li>
+                <li><a href="/vacancy/1">Вакансии</a></li>
+                <li><a href="/blog/1">Блог</a></li>
+                <li><a href="/contact">Контакты</a></li>
+                <li><a href="/about">О нас</a></li>
             </ul>
             <div class="header-top-right">
                 <div class="header-delivery">
@@ -239,24 +239,26 @@
 
                 <div class="posts">
                     {% for vacancy in vacancies %}
-                    <article class="post-card">
-                        <div class="post-card-cover">
-                                <img src="/media/{{vacancy.picture}}" alt="">
-                        </div>
-                        <div class="post-card-text">
-                            <div class="post-card-title no-link">
-                                <h3>Вакансия “{{ vacancy.title }}”</h3>
+                        {% if vacancy.active %}
+                        <article class="post-card">
+                            <div class="post-card-cover">
+                                    <img src="/media/{{vacancy.picture}}" alt="">
                             </div>
-                            <div class="post-card-content">
-                                <ul>
-                                    <li><b>Режим работы: </b>с {{vacancy.start}} до {{vacancy.end}}</li>
-                                    <li><b>Обед: </b>с {{vacancy.dinner_start}} до {{vacancy.dinner_end}}</li>
-                                    <li><b>Зарплата: </b>{{vacancy.salary|floatformat:"0" }} сум</li>
-                                    <li><b>Опыт работы: </b>{{vacancy.year}}</li>
-                                </ul>
+                            <div class="post-card-text">
+                                <div class="post-card-title no-link">
+                                    <h3>Вакансия “{{ vacancy.title }}”</h3>
+                                </div>
+                                <div class="post-card-content">
+                                    <ul>
+                                        <li><b>Режим работы: </b>с {{vacancy.start}} до {{vacancy.end}}</li>
+                                        <li><b>Обед: </b>с {{vacancy.dinner_start}} до {{vacancy.dinner_end}}</li>
+                                        <li><b>Зарплата: </b>{{vacancy.salary|floatformat:"0" }} сум</li>
+                                        <li><b>Опыт работы: </b>{{vacancy.year}}</li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                    </article>
+                        </article>
+                        {% endif %}
                     {% endfor %}
                     
                 </div>

@@ -50,7 +50,7 @@
                         <li><a href="/#sauces">Соусы</a></li>
                         <li><a href="/#sets">Сеты</a></li>
                         <li><a href="/discounts">Акции</a></li>
-                        <li><a href="/vacancy">Вакансии</a></li>
+                        <li><a href="/vacancy/1">Вакансии</a></li>
                         <li><a href="/blog">Блог</a></li>
                         <li><a href="/contact">Контакты</a></li>
                         <li><a href="/about">О нас</a></li>
@@ -72,7 +72,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <a href="cart/" class="btn-header-cart">Корзина</a>
+                            <a href="/cart/" class="btn-header-cart">Корзина</a>
                             <div class="header-cart-products" id="header_cart">
                                 {% for pizza in cart.pizzas.all %}
                                 <div class="header-cart-product" id="pizza {{ pizza.id }} {{ cart.id }}">
@@ -191,16 +191,16 @@
         </div>
         <div class="header-mobile-menu">
             <ul>
-                <li><a href="#pizza">Пиццы</a></li>
-                <li><a href="#drinks">Напитки</a></li>
-                <li><a href="#snacks">Закуски</a></li>
-                <li><a href="#sauces">Соусы</a></li>
-                <li><a href="#sets">Сеты</a></li>
-                <li><a href="discounts.html">Акции</a></li>
-                <li><a href="vacancy.html">Вакансии</a></li>
-                <li><a href="blog.html">Блог</a></li>
-                <li><a href="contact.html">Контакты</a></li>
-                <li><a href="about.html">О нас</a></li>
+                <li><a href="/#pizza">Пиццы</a></li>
+                <li><a href="/#drinks">Напитки</a></li>
+                <li><a href="/#snacks">Закуски</a></li>
+                <li><a href="/#sauces">Соусы</a></li>
+                <li><a href="/#sets">Сеты</a></li>
+                <li><a href="/discounts">Акции</a></li>
+                <li><a href="/vacancy/1">Вакансии</a></li>
+                <li><a href="/blog/1">Блог</a></li>
+                <li><a href="/contact">Контакты</a></li>
+                <li><a href="/about">О нас</a></li>
             </ul>
             <div class="header-top-right">
                 <div class="header-delivery">
@@ -239,32 +239,37 @@
 
                 <div class="posts">
                     {% for post in posts %}
-                    <article class="post-card">
-                        <div class="post-card-cover">
-                                <img src="/media/{{post.picture}}" alt="">
-                        </div>
-                        <div class="post-card-text">
-                            <a href="blog-single.html" class="post-card-title">
-                                <h3>{{ post.title }}</h3>
-                            </a>
-                            <div class="post-card-content">
-                                <p>{{ post.body }}</p>
+                        {% if post active %}
+                        <article class="post-card">
+                            <div class="post-card-cover">
+                                    <img src="/media/{{post.picture}}" alt="">
                             </div>
-                        </div>
-                    </article>
+                            <div class="post-card-text">
+                                <a href="/blog/{{ post.id }}/detail/" class="post-card-title">
+                                    <h3>{{ post.title }}</h3>
+                                </a>
+                                <div class="post-card-content">
+                                    <p>{{ post.show_body }}</p>
+                                </div>
+                            </div>
+                        </article>
+                        {% endif %}
                     {% endfor %}
                     
                 </div>
                 <ul class="pagination">
-                    <li><a href="#">«</a></li>
-                    <li><a href="#">1</a></li>
-                    <li><a href="">...</a></li>
-                    <li><a href="#">6</a></li>
-                    <li><a class="active" href="#">7</a></li>
-                    <li><a href="#">8</a></li>
-                    <li><a href="#">...</a></li>
-                    <li><a href="#">27</a></li>
-                    <li><a href="#">»</a></li>
+                    <li><a href="{{ prev }}">«</a></li>
+                    
+                    {% for a in page_count %}
+                        {% if a == current_page %}
+                            <li><a class="active" href="{{ a }}">{{ a }}</a></li>
+                        {% else %}
+                            <li><a href="{{ a }}">{{ a }}</a></li>
+                        {% endif %}
+                        
+
+                    {% endfor %}
+                    <li><a href="{{ next }}">»</a></li>
                 </ul>
             </div>
         </div>
