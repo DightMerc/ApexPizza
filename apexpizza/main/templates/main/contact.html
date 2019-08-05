@@ -1,4 +1,4 @@
-﻿{% load static %}
+{% load static %}
 {% load my_tags %}
 
 <!DOCTYPE html>
@@ -51,7 +51,7 @@
                         <li><a href="/#sets">Сеты</a></li>
                         <li><a href="/discounts">Акции</a></li>
                         <li><a href="/vacancy/1">Вакансии</a></li>
-                        <li><a href="/blog">Блог</a></li>
+                        <li><a href="/blog/1">Блог</a></li>
                         <li><a href="/contact">Контакты</a></li>
                         <li><a href="/about">О нас</a></li>
                     </ul>
@@ -72,7 +72,7 @@
                                     </span>
                                 </div>
                             </div>
-                            <a href="/cart/" class="btn-header-cart">Корзина</a>
+                            <a href="cart/" class="btn-header-cart">Корзина</a>
                             <div class="header-cart-products" id="header_cart">
                                 {% for pizza in cart.pizzas.all %}
                                 <div class="header-cart-product" id="pizza {{ pizza.id }} {{ cart.id }}">
@@ -231,46 +231,105 @@
         
     </section>
     <section class="main-content">
-        <div class="blog">
+        <div class="contacts">
             <div class="wrapper">
                 <h2 class="section-title-no-bg">
-                    Наш блог
+                    Контактная информация:
                 </h2>
-
-                <div class="posts">
-                    {% for post in posts %}
-                        {% if post.active %}
-                        <article class="post-card">
-                            <div class="post-card-cover">
-                                    <img src="/media/{{post.picture}}" alt="">
-                            </div>
-                            <div class="post-card-text">
-                                <a href="/blog/{{ post.id }}/detail/" class="post-card-title">
-                                    <h3>{{ post.title }}</h3>
-                                </a>
-                                <div class="post-card-content">
-                                    <p>{{ post.show_body }}</p>
+                <div class="contacts-card">
+                    <h3>Филиал на ул. Новомосковская</h3>
+                    <div class="contacts-card-bottom">
+                        <div class="contacts-card-left">
+                            <div class="contacts-icon-card">
+                                <div class="contacts-icon">
+                                    <img src="{% static 'images\icons\location.png' %}" alt="">
                                 </div>
+                                <span>г. Ташкент уль заводская</span>
                             </div>
-                        </article>
-                        {% endif %}
-                    {% endfor %}
-                    
+                            <div class="contacts-icon-card">
+                                <div class="contacts-icon">
+                                    <img src="{% static 'images\icons\phone.png' %}" alt="">
+                                </div>
+                                <span>(71) 202-20-20</span>
+                            </div>
+                            <div class="contacts-icon-card">
+                                <div class="contacts-icon">
+                                    <img src="{% static 'images\icons\compass.png' %}" alt="">
+                                </div>
+                                <span>Ориентир - кафе "Фрегат"</span>
+                            </div>
+                        </div>
+                        <div class="contacts-card-right">
+                            <iframe src="https://yandex.ru/map-widget/v1/-/CCB8VJyy" width="560" height="400" frameborder="1"
+                            allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
                 </div>
-                <ul class="pagination">
-                    <li><a href="{{ prev }}">«</a></li>
-                    
-                    {% for a in page_count %}
-                        {% if a == current_page %}
-                            <li><a class="active" href="{{ a }}">{{ a }}</a></li>
-                        {% else %}
-                            <li><a href="{{ a }}">{{ a }}</a></li>
-                        {% endif %}
-                        
+                <div class="contacts-card">
+                    <h3>Филиал на ул. Новомосковская</h3>
+                    <div class="contacts-card-bottom">
+                        <div class="contacts-card-left">
+                            <div class="contacts-icon-card">
+                                <div class="contacts-icon">
+                                        <img src="{% static 'images\icons\location.png' %}" alt="">
+                                    
+                                </div>
+                                <span>г. Ташкент уль заводская</span>
+                            </div>
+                            <div class="contacts-icon-card">
+                                <div class="contacts-icon">
+                                        <img src="{% static 'images\icons\phone.png' %}" alt="">
+                                    
+                                </div>
+                                <span>(71) 202-20-20</span>
+                            </div>
+                            <div class="contacts-icon-card">
+                                <div class="contacts-icon">
+                                        <img src="{% static 'images\icons\compass.png' %}" alt="">
+                                    
+                                </div>
+                                <span>Ориентир - кафе "Фрегат"</span>
+                            </div>
+                        </div>
+                        <div class="contacts-card-right">
+                            <iframe src="https://yandex.ru/map-widget/v1/-/CCB8VJyy" width="560" height="400" frameborder="1"
+                            allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
+                <div class="contacts-card">
+                    <h3>Филиал на ул. Новомосковская</h3>
+                    <div class="contacts-card-bottom">
+                        <div class="contacts-card-left">
+                            <div class="contacts-icon-card">
+                                <div class="contacts-icon">
+                                        <img src="{% static 'images\icons\location.png' %}" alt="">
+                                    
+                                </div>
+                                <span>г. Ташкент уль заводская</span>
+                            </div>
+                            <div class="contacts-icon-card">
+                                <div class="contacts-icon">
+                                        <img src="{% static 'images\icons\phone.png' %}" alt="">
+                                    
+                                </div>
+                                <span>(71) 202-20-20</span>
+                            </div>
+                            <div class="contacts-icon-card">
+                                <div class="contacts-icon">
+                                        <img src="{% static 'images\icons\compass.png' %}" alt="">
+                                    
+                                </div>
+                                <span>Ориентир - кафе "Фрегат"</span>
+                            </div>
+                        </div>
+                        <div class="contacts-card-right">
+                            <iframe src="https://yandex.ru/map-widget/v1/-/CCB8VJyy" width="560" height="400" frameborder="1"
+                            allowfullscreen="true"></iframe>
+                        </div>
+                    </div>
+                </div>
 
-                    {% endfor %}
-                    <li><a href="{{ next }}">»</a></li>
-                </ul>
             </div>
         </div>
     </section>
@@ -282,7 +341,7 @@
         <div class="wrapper">
             <div class="footer-logo">
                 <a href="index.html">
-                    <img src="images\logo-footer.png" alt="">
+                    <img src="images/logo-footer.png" alt="">
                 </a>
             </div>
             <div class="footer-menu">
@@ -302,7 +361,7 @@
             <div class="footer-numbers">
                 <h4>Зона<br>Доставки</h4>
                 <a href="tel:+998712022020" class="footer-phone">
-                    <img src="images\footer-phone.png" alt="">
+                    <img src="images/footer-phone.png" alt="">
                     (71) 202-20-20
                 </a>
                 <div class="footer-delivery">
@@ -312,7 +371,8 @@
             </div>
             <div class="footer-map-socials">
                 <div class="footer-map">
-                    <iframe src="https://yandex.ru/map-widget/v1/-/CCB8VJyy" width="560" height="400" frameborder="1" allowfullscreen="true"></iframe>
+                    <iframe src="https://yandex.ru/map-widget/v1/-/CCB8VJyy" width="560" height="400" frameborder="1"
+                        allowfullscreen="true"></iframe>
                 </div>
                 <div class="footer-socials">
                     <a href=""><i class="fa fa-instagram"></i> </a>
