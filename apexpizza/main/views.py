@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Pizza, AnonymousUser, TempOrder, TempPizza, Size, DoughType, Topping, Drink, TempDrink, Volume, PriceForSize, PriceForVolume
 from .models import Snack, Sauce, Set
-from .models import TempSnack, TempSauce, TempSet, Present, TempPresent, Discount, Vacancy, BlogPost
+from .models import TempSnack, TempSauce, TempSet, Present, TempPresent, Discount, Vacancy, BlogPost, Order, User, Order
 import json
 
 from django.core.paginator import Paginator
@@ -37,35 +37,31 @@ def base(request):
 
    user_num = request.session.get('user')
    cart_price = 0
-   cart_num = 0
 
    temp_orders = TempOrder.objects.all()
+   temp_order = None
+   
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
-      for pizza in order.pizzas.all():
-         cart_num += 1
-         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+            for pizza in order.pizzas.all():
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price * pizza.quantity
 
-      for drink in order.drinks.all():
-         cart_num += 1
-         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+            for drink in order.drinks.all():
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price * drink.quantity
 
-      for snack in order.snacks.all():
-         cart_num += 1
-         cart_price += snack.price
+            for snack in order.snacks.all():
+               cart_price += snack.price * snack.quantity
 
-      for sauce in order.sauces.all():
-         cart_num += 1
-         cart_price += sauce.price
+            for sauce in order.sauces.all():
+               cart_price += sauce.price * sauce.quantity
 
-      for _set in order.sets.all():
-         cart_num += 1
-         cart_price += _set.price
+            for _set in order.sets.all():
+               cart_price += _set.price * _set.quantity
    else:
-      temp_order = ""
+      temp_order = None
 
 
 
@@ -74,7 +70,7 @@ def base(request):
    request.session['num_visits'] = num_visits+1
 
    total_amount = 0
-   if temp_order!="":
+   if temp_order!=None:
       for element in temp_order.pizzas.all():
          total_amount += element.quantity
       for element in temp_order.drinks.all():
@@ -86,7 +82,7 @@ def base(request):
       for element in temp_order.sets.all():
          total_amount += element.quantity
 
-   return render(request, 'main/index.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount})
+   return render(request, 'main/index.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "total_amount":total_amount})
 
 def removeProduct(request):
    user_num = request.session.get('user')
@@ -218,12 +214,13 @@ def temp_order(request, pk):
          Создание экземпляра временного заказа
          
          """
+         
          temp_orders = TempOrder.objects.all()
          for order in temp_orders:
             if order.user.id == user_num:
                temp_order = get_object_or_404(TempOrder, pk=order.id)
                temp_order.pizzas.add(get_object_or_404(TempPizza, pk=temp_pizza.id))
-               return HttpResponse(str(temp_pizza.id) + " " + str(temp_order.id) + " "  + str(temp_pizza.doughType) + " " + str(temp_pizza.size))
+               return HttpResponse(str(temp_pizza.id) + " " + str(temp_order.id) + " "  + str(temp_pizza.doughType) + " " + str(temp_pizza.size) + " " + str(temp_pizza.price))
                break
       
          order_quantity = len(TempOrder.objects.all())
@@ -232,7 +229,7 @@ def temp_order(request, pk):
          temp_order.user = get_object_or_404(AnonymousUser, pk=user_num)
          temp_order.save(force_insert=True)
          temp_order.pizzas.add(get_object_or_404(TempPizza, pk=temp_pizza.id))
-         return HttpResponse(str(temp_pizza.id) + " " + str(temp_order.id) + " "  + str(temp_pizza.doughType) + " " + str(temp_pizza.size))
+         return HttpResponse(str(temp_pizza.id) + " " + str(temp_order.id) + " "  + str(temp_pizza.doughType) + " " + str(temp_pizza.size) + " " + str(temp_pizza.price))
 
       elif request.POST.get("object") == "drink":
          drink = get_object_or_404(Drink, pk=pk)
@@ -262,7 +259,7 @@ def temp_order(request, pk):
             if order.user.id == user_num:
                temp_order = get_object_or_404(TempOrder, pk=order.id)
                temp_order.drinks.add(get_object_or_404(TempDrink, pk=temp_drink.id))
-               return HttpResponse(str(temp_drink.id) + " " + str(temp_order.id) + " "  + str(temp_drink.volume))
+               return HttpResponse(str(temp_drink.id) + " " + str(temp_order.id) + " "  + str(temp_drink.volume) +  " " + str(temp_drink.price))
                break
       
          order_quantity = len(TempOrder.objects.all())
@@ -272,7 +269,7 @@ def temp_order(request, pk):
          temp_order.save(force_insert=True)
          temp_order.drinks.add(get_object_or_404(TempDrink, pk=temp_drink.id))
 
-         return HttpResponse(str(temp_drink.id) + " " + str(temp_order.id) + " "  + str(temp_drink.volume))
+         return HttpResponse(str(temp_drink.id) + " " + str(temp_order.id) + " "  + str(temp_drink.volume) +  " " + str(temp_drink.price))
          
 
       elif request.POST.get("object") == "snack":
@@ -299,7 +296,7 @@ def temp_order(request, pk):
             if order.user.id == user_num:
                temp_order = get_object_or_404(TempOrder, pk=order.id)
                temp_order.snacks.add(get_object_or_404(TempSnack, pk=temp_snack.id))
-               return HttpResponse(str(temp_snack.id) + " " + str(temp_order.id))
+               return HttpResponse(str(temp_snack.id) + " " + str(temp_order.id) +  " " + str(temp_snack.price))
                break
       
          order_quantity = len(TempOrder.objects.all())
@@ -308,7 +305,7 @@ def temp_order(request, pk):
          temp_order.user = get_object_or_404(AnonymousUser, pk=user_num)
          temp_order.save(force_insert=True)
          temp_order.snacks.add(get_object_or_404(TempSnack, pk=temp_snack.id))
-         return HttpResponse(str(temp_snack.id) + " " + str(temp_order.id))
+         return HttpResponse(str(temp_snack.id) + " " + str(temp_order.id) +  " " + str(temp_snack.price))
 
 
       elif request.POST.get("object") == "sauce":
@@ -334,7 +331,7 @@ def temp_order(request, pk):
             if order.user.id == user_num:
                temp_order = get_object_or_404(TempOrder, pk=order.id)
                temp_order.sauces.add(get_object_or_404(TempSauce, pk=temp_sauce.id))
-               return HttpResponse(str(temp_sauce.id) + " " + str(temp_order.id))
+               return HttpResponse(str(temp_sauce.id) + " " + str(temp_order.id) +  " " + str(temp_sauce.price))
                break
       
          order_quantity = len(TempOrder.objects.all())
@@ -344,7 +341,7 @@ def temp_order(request, pk):
          temp_order.save(force_insert=True)
          temp_order.sauces.add(get_object_or_404(TempSauce, pk=temp_sauce.id))
 
-         return HttpResponse(str(temp_sauce.id) + " " + str(temp_order.id))
+         return HttpResponse(str(temp_sauce.id) + " " + str(temp_order.id) +  " " + str(temp_sauce.price))
          
 
       elif request.POST.get("object") == "set":
@@ -370,7 +367,7 @@ def temp_order(request, pk):
             if order.user.id == user_num:
                temp_order = get_object_or_404(TempOrder, pk=order.id)
                temp_order.sets.add(get_object_or_404(TempSet, pk=temp_set.id))
-               return HttpResponse(str(temp_set.id) + " " + str(temp_order.id))
+               return HttpResponse(str(temp_set.id) + " " + str(temp_order.id) +  " " + str(temp_set.price))
                
                break
       
@@ -381,7 +378,7 @@ def temp_order(request, pk):
          temp_order.save(force_insert=True)
          temp_order.sets.add(get_object_or_404(TempSet, pk=temp_set.id))
 
-         return HttpResponse(str(temp_set.id) + " " + str(temp_order.id))
+         return HttpResponse(str(temp_set.id) + " " + str(temp_order.id) +  " " + str(temp_set.price))
          
       
 
@@ -468,34 +465,14 @@ def changeAmount(request):
 
          order = get_object_or_404(TempOrder, pk=order_number)
 
-         all_price = 0
-         for pizza in order.pizzas.all():
-            all_price += int(pizza.price) * int(pizza.quantity)
-         for drink in order.drinks.all():
-            all_price += int(drink.price) * int(drink.quantity)
-         for snack in order.snacks.all():
-            all_price += int(snack.price) * int(snack.quantity)
-         for sauce in order.sauces.all():
-            all_price += int(sauce.price) * int(sauce.quantity)
-         for _set in order.sets.all():
-            all_price += int(_set.price) * int(_set.quantity)
+         
 
-         return HttpResponse(str(changing_model.quantity) + " " + str(all_price))
+         return HttpResponse(str(changing_model.quantity) + " " + str(changing_model.price))
 
       elif operation == "minus":
          order = get_object_or_404(TempOrder, pk=order_number)
 
-         all_price = 0
-         for pizza in order.pizzas.all():
-            all_price += int(pizza.price) * int(pizza.quantity)
-         for drink in order.drinks.all():
-            all_price += int(drink.price) * int(drink.quantity)
-         for snack in order.snacks.all():
-            all_price += int(snack.price) * int(snack.quantity)
-         for sauce in order.sauces.all():
-            all_price += int(sauce.price) * int(sauce.quantity)
-         for _set in order.sets.all():
-            all_price += int(_set.price) * int(_set.quantity)
+         
 
 
 
@@ -519,7 +496,7 @@ def changeAmount(request):
             elif change_object == "present":
                order.presents.remove(changing_model)
 
-            return HttpResponse("removed " + str(all_price))
+            return HttpResponse("removed " + str(changing_model.price))
 
          elif changing_model.quantity == 0:
             order = get_object_or_404(TempOrder, pk=order_number)
@@ -541,7 +518,7 @@ def changeAmount(request):
             elif change_object == "present":
                order.presents.remove(changing_model)
 
-            return HttpResponse("removed " + str(all_price))
+            return HttpResponse("removed " + str(changing_model.price))
          else:
             if changing_model.quantity!=0:
                changing_model.quantity = changing_model.quantity - 1
@@ -549,7 +526,7 @@ def changeAmount(request):
 
             
 
-            return HttpResponse(str(changing_model.quantity) + " " + str(all_price))
+            return HttpResponse(str(changing_model.quantity) + " " + str(changing_model.price))
 
 
 def CartShow(request):
@@ -574,32 +551,49 @@ def CartShow(request):
    cart_num = 0
 
    temp_orders = TempOrder.objects.all()
+   total_amount = 0
+
+
+   temp_order = None
+
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
-      for pizza in order.pizzas.all():
-         cart_num += 1
-         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+            for pizza in order.pizzas.all():
+               cart_num += 1
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
 
-      for drink in order.drinks.all():
-         cart_num += 1
-         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+            for drink in order.drinks.all():
+               cart_num += 1
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
 
-      for snack in order.snacks.all():
-         cart_num += 1
-         cart_price += snack.price
+            for snack in order.snacks.all():
+               cart_num += 1
+               cart_price += snack.price
 
-      for sauce in order.sauces.all():
-         cart_num += 1
-         cart_price += sauce.price
+            for sauce in order.sauces.all():
+               cart_num += 1
+               cart_price += sauce.price
 
-      for _set in order.sets.all():
-         cart_num += 1
-         cart_price += _set.price
+            for _set in order.sets.all():
+               cart_num += 1
+               cart_price += _set.price
+
+            for element in temp_order.pizzas.all():
+               total_amount += element.quantity
+            for element in temp_order.drinks.all():
+               total_amount += element.quantity
+            for element in temp_order.snacks.all():
+               total_amount += element.quantity
+            for element in temp_order.sauces.all():
+               total_amount += element.quantity
+            for element in temp_order.sets.all():
+               total_amount += element.quantity
    else:
-      temp_order = ""
+      temp_order = None
+      
 
 
 
@@ -607,17 +601,7 @@ def CartShow(request):
    num_visits=request.session.get('num_visits', 0)
    request.session['num_visits'] = num_visits+1
 
-   total_amount = 0
-   for element in temp_order.pizzas.all():
-      total_amount += element.quantity
-   for element in temp_order.drinks.all():
-      total_amount += element.quantity
-   for element in temp_order.snacks.all():
-      total_amount += element.quantity
-   for element in temp_order.sauces.all():
-      total_amount += element.quantity
-   for element in temp_order.sets.all():
-      total_amount += element.quantity
+   
    
 
    return render(request, 'main/cart.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "presents": presents})
@@ -648,32 +632,35 @@ def discounts_view(request):
    cart_num = 0
 
    temp_orders = TempOrder.objects.all()
+
+   temp_order = None
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
-      for pizza in order.pizzas.all():
-         cart_num += 1
-         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+            for pizza in order.pizzas.all():
+               cart_num += 1
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
 
-      for drink in order.drinks.all():
-         cart_num += 1
-         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+            for drink in order.drinks.all():
+               cart_num += 1
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
 
-      for snack in order.snacks.all():
-         cart_num += 1
-         cart_price += snack.price
+            for snack in order.snacks.all():
+               cart_num += 1
+               cart_price += snack.price
 
-      for sauce in order.sauces.all():
-         cart_num += 1
-         cart_price += sauce.price
+            for sauce in order.sauces.all():
+               cart_num += 1
+               cart_price += sauce.price
 
-      for _set in order.sets.all():
-         cart_num += 1
-         cart_price += _set.price
+            for _set in order.sets.all():
+               cart_num += 1
+               cart_price += _set.price
    else:
-      temp_order = ""
+      temp_order = None
+      
 
 
 
@@ -682,7 +669,7 @@ def discounts_view(request):
    request.session['num_visits'] = num_visits+1
 
    total_amount = 0
-   if temp_order!="":
+   if temp_order!=None:
       for element in temp_order.pizzas.all():
          total_amount += element.quantity
       for element in temp_order.drinks.all():
@@ -748,32 +735,36 @@ def vacancy_view(request, pk):
    cart_num = 0
 
    temp_orders = TempOrder.objects.all()
+
+   temp_order = None
+
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
-      for pizza in order.pizzas.all():
-         cart_num += 1
-         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+            for pizza in order.pizzas.all():
+               cart_num += 1
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
 
-      for drink in order.drinks.all():
-         cart_num += 1
-         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+            for drink in order.drinks.all():
+               cart_num += 1
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
 
-      for snack in order.snacks.all():
-         cart_num += 1
-         cart_price += snack.price
+            for snack in order.snacks.all():
+               cart_num += 1
+               cart_price += snack.price
 
-      for sauce in order.sauces.all():
-         cart_num += 1
-         cart_price += sauce.price
+            for sauce in order.sauces.all():
+               cart_num += 1
+               cart_price += sauce.price
 
-      for _set in order.sets.all():
-         cart_num += 1
-         cart_price += _set.price
+            for _set in order.sets.all():
+               cart_num += 1
+               cart_price += _set.price
    else:
-      temp_order = ""
+      temp_order = None
+      
 
 
 
@@ -782,7 +773,7 @@ def vacancy_view(request, pk):
    request.session['num_visits'] = num_visits+1
 
    total_amount = 0
-   if temp_order!="":
+   if temp_order!=None:
       for element in temp_order.pizzas.all():
          total_amount += element.quantity
       for element in temp_order.drinks.all():
@@ -852,32 +843,35 @@ def blog_view(request, pk):
    cart_num = 0
 
    temp_orders = TempOrder.objects.all()
+
+   temp_order = None
+
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
-      for pizza in order.pizzas.all():
-         cart_num += 1
-         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+            for pizza in order.pizzas.all():
+               cart_num += 1
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
 
-      for drink in order.drinks.all():
-         cart_num += 1
-         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+            for drink in order.drinks.all():
+               cart_num += 1
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
 
-      for snack in order.snacks.all():
-         cart_num += 1
-         cart_price += snack.price
+            for snack in order.snacks.all():
+               cart_num += 1
+               cart_price += snack.price
 
-      for sauce in order.sauces.all():
-         cart_num += 1
-         cart_price += sauce.price
+            for sauce in order.sauces.all():
+               cart_num += 1
+               cart_price += sauce.price
 
-      for _set in order.sets.all():
-         cart_num += 1
-         cart_price += _set.price
+            for _set in order.sets.all():
+               cart_num += 1
+               cart_price += _set.price
    else:
-      temp_order = ""
+      temp_order = None
 
 
 
@@ -886,7 +880,7 @@ def blog_view(request, pk):
    request.session['num_visits'] = num_visits+1
 
    total_amount = 0
-   if temp_order!="":
+   if temp_order!=None:
       for element in temp_order.pizzas.all():
          total_amount += element.quantity
       for element in temp_order.drinks.all():
@@ -921,43 +915,40 @@ def blog_view_detailed(request, pk):
    user_num = request.session.get('user')
    cart_price = 0
    cart_num = 0
-
+   temp_order = None
    temp_orders = TempOrder.objects.all()
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
-      for pizza in order.pizzas.all():
-         cart_num += 1
-         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+            for pizza in order.pizzas.all():
+               cart_num += 1
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
 
-      for drink in order.drinks.all():
-         cart_num += 1
-         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+            for drink in order.drinks.all():
+               cart_num += 1
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
 
-      for snack in order.snacks.all():
-         cart_num += 1
-         cart_price += snack.price
+            for snack in order.snacks.all():
+               cart_num += 1
+               cart_price += snack.price
 
-      for sauce in order.sauces.all():
-         cart_num += 1
-         cart_price += sauce.price
+            for sauce in order.sauces.all():
+               cart_num += 1
+               cart_price += sauce.price
 
-      for _set in order.sets.all():
-         cart_num += 1
-         cart_price += _set.price
+            for _set in order.sets.all():
+               cart_num += 1
+               cart_price += _set.price
    else:
-      temp_order = ""
-
-
-
+      temp_order = None
 
    num_visits=request.session.get('num_visits', 0)
    request.session['num_visits'] = num_visits+1
 
    total_amount = 0
-   if temp_order!="":
+   if temp_order!=None:
       for element in temp_order.pizzas.all():
          total_amount += element.quantity
       for element in temp_order.drinks.all():
@@ -1055,6 +1046,7 @@ def about_view(request):
    user_num = request.session.get('user')
    cart_price = 0
    cart_num = 0
+   temp_order = None
 
    temp_orders = TempOrder.objects.all()
    if len(temp_orders)>0:
@@ -1062,27 +1054,27 @@ def about_view(request):
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
-      for pizza in order.pizzas.all():
-         cart_num += 1
-         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+            for pizza in order.pizzas.all():
+               cart_num += 1
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
 
-      for drink in order.drinks.all():
-         cart_num += 1
-         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+            for drink in order.drinks.all():
+               cart_num += 1
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
 
-      for snack in order.snacks.all():
-         cart_num += 1
-         cart_price += snack.price
+            for snack in order.snacks.all():
+               cart_num += 1
+               cart_price += snack.price
 
-      for sauce in order.sauces.all():
-         cart_num += 1
-         cart_price += sauce.price
+            for sauce in order.sauces.all():
+               cart_num += 1
+               cart_price += sauce.price
 
-      for _set in order.sets.all():
-         cart_num += 1
-         cart_price += _set.price
+            for _set in order.sets.all():
+               cart_num += 1
+               cart_price += _set.price
    else:
-      temp_order = ""
+      temp_order = None
 
 
 
@@ -1091,7 +1083,7 @@ def about_view(request):
    request.session['num_visits'] = num_visits+1
 
    total_amount = 0
-   if temp_order!="":
+   if temp_order!=None:
       for element in temp_order.pizzas.all():
          total_amount += element.quantity
       for element in temp_order.drinks.all():
@@ -1106,7 +1098,96 @@ def about_view(request):
    return render(request, 'main/about.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount})
 
 
+def newOrderView(request):
 
+   name = request.POST.get("name")
+   phone = request.POST.get("phone").replace(" ", "").replace("-", "").replace("+", "")
+   place = request.POST.get("place")
+   info = request.POST.get("info")
+
+   try:
+      actual_user = User.objects.get(phone=phone)
+   except Exception as e:
+      actual_user = User()
+      actual_user.cashback = 0
+
+
+   actual_user.name = name
+   actual_user.phone = phone
+   actual_user.place = place
+   actual_user.info = info
+
+   actual_user.save()
+
+
+   user_num = request.session.get('user')
+
+   temp_orders = TempOrder.objects.all()
+   if len(temp_orders)>0:
+      for order in temp_orders:
+         if order.user.id == user_num:
+            temp_order = get_object_or_404(TempOrder, pk=order.id)
+
+   actual_order = Order()
+   order_quantity = len(Order.objects.all())
+
+   actual_order.title = order_quantity + 1
+   actual_order.user = actual_user
+
+   actual_order.save()
+
+
+   for element in temp_order.pizzas.all():
+      actual_order.pizzas.add(element)
+   for element in temp_order.drinks.all():
+      actual_order.drinks.add(element)
+   for element in temp_order.snacks.all():
+      actual_order.snacks.add(element)
+   for element in temp_order.sauces.all():
+      actual_order.sauces.add(element)
+   for element in temp_order.sets.all():
+      actual_order.sets.add(element)
+   for element in temp_order.presents.all():
+      actual_order.presents.add(element)
+
+   temp_order.delete()
+
+   return HttpResponse("Order created. Temp order deleted")
+
+
+def AdminPanelView(request, pk):
+   orders = Order.objects.all()
+   pagination = Paginator(orders, 6)
+
+   page_count = []
+   a = 0
+   while a<pagination.num_pages:
+      a += 1
+      page_count.append(int(a))
+
+
+   if not pk in page_count:
+      return HttpResponse("Page not found", status=404)
+      
+   next_page = "#"
+   prev_page = "#"
+
+   if pk>1:
+      prev_page = str(pk - 1)
+   else:
+      prev_page = "#"
+
+   if pk + 1 > pagination.num_pages:
+      next_page = "#"
+   else:
+      next_page = str(pk + 1)
+
+
+   current_page = pk
+
+
+   return render(request, 'main/admin_panel.html', {'current_page': current_page, 'next': next_page, 'prev':prev_page, 'page_count':page_count})
+   
 
 
 

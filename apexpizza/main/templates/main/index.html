@@ -40,7 +40,7 @@
         </div>
         <div class="header-bottom">
             <nav class="header-menu">
-                <a href="index.html" class="header-sticky-logo" style="">
+                <a href="/" class="header-sticky-logo" style="">
                     
                     <img src="{% static 'images\logo-no-text.png' %}" alt="">
                 </a>
@@ -104,7 +104,7 @@
                                 <button class="amount-remove" type="button" name="button">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" name="name" value="{{pizza.quantity}}" id="input_value drink {{ drink.id }}">
+                                <input type="text" name="name" value="{{drink.quantity}}" id="input_value drink {{ drink.id }}">
                                 <button class="amount-add" type="button" name="button">
                                     <i class="fa fa-plus"></i>
                                 </button>
@@ -121,7 +121,7 @@
                                 <button class="amount-remove" type="button" name="button" id="minus snack {{ snack.id }} {{ cart.id }}">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" name="name" value="{{pizza.quantity}}" id="input_value snack {{ snack.id }}">
+                                <input type="text" name="name" value="{{snack.quantity}}" id="input_value snack {{ snack.id }}">
                                 <button class="amount-add" type="button" name="button" id="plus snack {{ snack.id }} {{ cart.id }}">
                                     <i class="fa fa-plus"></i>
                                 </button>
@@ -138,7 +138,7 @@
                                 <button class="amount-remove" type="button" name="button" id="minus sauce {{ sauce.id }} {{ cart.id }}">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" name="name" value="{{pizza.quantity}}" id="input_value sauce {{ sauce.id }}">
+                                <input type="text" name="name" value="{{sauce.quantity}}" id="input_value sauce {{ sauce.id }}">
                                 <button class="amount-add" type="button" name="button" id="plus sauce {{ sauce.id }} {{ cart.id }}">
                                     <i class="fa fa-plus"></i>
                                 </button>
@@ -155,7 +155,7 @@
                                 <button class="amount-remove" type="button" name="button" id="minus set {{ set.id }} {{ cart.id }}">
                                     <i class="fa fa-minus"></i>
                                 </button>
-                                <input type="text" name="name" value="{{pizza.quantity}}" id="input_value set {{ set.id }}">
+                                <input type="text" name="name" value="{{set.quantity}}" id="input_value set {{ set.id }}">
                                 <button class="amount-add" type="button" name="button" id="plus set {{ set.id }} {{ cart.id }}">
                                     <i class="fa fa-plus"></i>
                                 </button>
@@ -191,11 +191,11 @@
         </div>
         <div class="header-mobile-menu">
             <ul>
-                <li><a href="/#pizza">Пиццы</a></li>
-                <li><a href="/#drinks">Напитки</a></li>
-                <li><a href="/#snacks">Закуски</a></li>
-                <li><a href="/#sauces">Соусы</a></li>
-                <li><a href="/#sets">Сеты</a></li>
+                <li><a href="#pizza">Пиццы</a></li>
+                <li><a href="#drinks">Напитки</a></li>
+                <li><a href="#snacks">Закуски</a></li>
+                <li><a href="#sauces">Соусы</a></li>
+                <li><a href="#sets">Сеты</a></li>
                 <li><a href="/discounts">Акции</a></li>
                 <li><a href="/vacancy/1">Вакансии</a></li>
                 <li><a href="/blog/1">Блог</a></li>
@@ -214,7 +214,7 @@
                 </div>
             </div>
         </div>
-        <a href="" class="header-mobile-cart">
+        <a href="/cart/" class="header-mobile-cart">
             <i class="fa fa-shopping-basket" aria-hidden="true"></i>
             <span class="header-mobile-cart-number" id="mobile_amount">{{ total_amount }}</span>
         </a>
@@ -241,8 +241,6 @@
                 <img src="{% static 'images\title-bg.png' %}" alt="">
                 ПИЦЦА:
             </h2>
-            {{number}}
-            {{total_amount}}
 
 
             <div class="pizza" id="pizza">
@@ -260,15 +258,13 @@
                                         <div class="pizza-details">
                                             <div class="pizza-info">
                                                 <h3 class="pizza-name" id="pizza-name {{pizza.id}}">{{pizza.title}}</h3>
-                                                <div class="pizza-comp">
+                                                <p class="pizza-comp">
                                                     {% for topping in pizza.toppings.all %}
-                                                    <input type="checkbox" class="pizza-comp-option" name="toppings{{pizza.id}}" value={{topping.id}} checked="">
-                                                        {{pizzas.toppings.all}}
-                                                        {{topping.title}}
-                                                        <i class="fa fa-times" aria-hidden="true"></i>
-                                                    </input>
+                                                        <input class="check_" type="checkbox" class="pizza-comp-option" name="toppings{{pizza.id}}" id="{{pizza.id}} {{topping.id}}" value={{topping.id}} checked=""/>
+                                                        <label class="smth" for="{{pizza.id}} {{topping.id}}">{{topping.title}}<i class="fa fa-times " aria-hidden="true"></i></label><br />
+
                                                     {% endfor %}
-                                                </div>
+                                                </p>
                                             </div>
                                             <div>
                                                 <div class="pizza-size">
@@ -342,7 +338,7 @@
                             {% for price in pricesFV %}
 
                                 {% if price.drink.id == drink.id %}
-                                    {% if price.volume.id == 1 %}
+                                    {% if price.volume.title == "0,5л" %}
                                         <span class="drinks-price" id="drinkprice {{drink.id}}">{{ price.price|floatformat:"0" }} сум</span>
                                     {% endif %}
                                 {% endif %}
@@ -364,7 +360,10 @@
                                     {% for price in pricesFV %}
                                     
                                         {% if price.drink.id == drink.id %}
-                                            {% if price.volume.id == 3 %}
+                                            {% if price.volume.title == "0,5л" %}
+                                                <input type="radio" id="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}" name="volume_selector" value="{{price.volume.id}}" checked="">
+                                                <label for="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}">{{price.volume.title}}</label>
+                                            {% elif price.volume.title == "1,25л" %}
                                                 <input type="radio" id="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}" name="volume_selector" value="{{price.volume.id}}" checked="">
                                                 <label for="{{ drink.id }} {{price.volume_selector.title}} {{price.price|floatformat:"0"}}">{{price.volume.title}}</label>
                                             {% else %}
@@ -399,7 +398,7 @@
                                 <h3 class="snacks-name" id="snacks-name {{snack.id}}">{{snack.title}}</h3>
                                 <div class="snacks-actions">
                                     <button type="submit" class="add-to-cart">В корзину</button>
-                                    <span class="snacks-price">{{ snack.price|floatformat:"0" }} сум</span>
+                                    <span class="snacks-price" id="snackprice {{snack.id}}">{{ snack.price|floatformat:"0" }} сум</span>
                                 </div>
                             </div>
                         </form>
@@ -426,7 +425,7 @@
                                 </h3>
                                 <div class="sauces-actions">
                                     <button type="submit" class="add-to-cart">В корзину</button>
-                                    <span class="sauces-price">{{ sauce.price|floatformat:"0" }} сум</span>
+                                    <span class="sauces-price" id="sauceprice {{sauce.id}}">{{ sauce.price|floatformat:"0" }} сум</span>
                                 </div>
                             </div>
                         </form>
@@ -449,7 +448,7 @@
                                 <h3 class="sets-name" id="sets-name {{set.id}}">{{ set.title }}</h3>
                                 <div class="sets-actions">
                                     <button type="submit" class="add-to-cart">В корзину</button>
-                                    <span class="sets-price">{{ set.price|floatformat:"0" }} сум</span>
+                                    <span class="sets-price" id="setprice {{set.id}}">{{ set.price|floatformat:"0" }} сум</span>
                                 </div>
                             </div>
                         </div>
@@ -483,23 +482,23 @@
     <footer class="footer">
         <div class="wrapper">
             <div class="footer-logo">
-                <a href="index.html">
+                <a href="/">
                         
                     <img src="{% static 'images\logo-footer.png' %}" alt="">
                 </a>
             </div>
             <div class="footer-menu">
                 <ul>
-                    <li><a href="#">Пиццы</a></li>
-                    <li><a href="#">Напитки</a></li>
-                    <li><a href="#">Закуски</a></li>
-                    <li><a href="#">Соусы</a></li>
-                    <li><a href="#">Сеты</a></li>
-                    <li><a href="#">Акции</a></li>
-                    <li><a href="#">Вакансии</a></li>
-                    <li><a href="#">Блог</a></li>
-                    <li><a href="#">Контакты</a></li>
-                    <li><a href="#">О нас</a></li>
+                    <li><a href="#pizza">Пиццы</a></li>
+                    <li><a href="#drinks">Напитки</a></li>
+                    <li><a href="#snacks">Закуски</a></li>
+                    <li><a href="#sauces">Соусы</a></li>
+                    <li><a href="#sets">Сеты</a></li>
+                    <li><a href="/discounts">Акции</a></li>
+                    <li><a href="/vacancy/1">Вакансии</a></li>
+                    <li><a href="/blog/1">Блог</a></li>
+                    <li><a href="/contact">Контакты</a></li>
+                    <li><a href="/about">О нас</a></li>
                 </ul>
             </div>
             <div class="footer-numbers">

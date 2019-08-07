@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Pizza, Topping, DoughType, Size
 from .models import Drink, Sauce, Snack, Set, AnonymousUser, TempPizza, TempOrder, Volume, PriceForSize, TempDrink, PriceForVolume, TempSnack, TempSauce, TempSet, Present, TempPresent
-from .models import Discount, Vacancy, BlogPost
+from .models import Discount, Vacancy, BlogPost, User, Order, OrderState
 
 # register your models here.
 admin.site.register(Pizza)
@@ -33,6 +33,13 @@ admin.site.register(TempPresent)
 admin.site.register(Discount)
 admin.site.register(Vacancy)
 admin.site.register(BlogPost)
+
+admin.site.register(User)
+admin.site.register(Order)
+
+admin.site.register(OrderState)
+
+
 
 
 

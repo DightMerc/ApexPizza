@@ -1,7 +1,7 @@
 from django.urls import path, re_path, include
 from .views import base
 from .views import temp_order, getTempOrder, removeProduct, changeAmount, CartShow
-from .views import discounts_view, vacancy_view, blog_view, blog_view_detailed, contact_view, about_view
+from .views import discounts_view, vacancy_view, blog_view, blog_view_detailed, contact_view, about_view, newOrderView, AdminPanelView
 
 urlpatterns = [
     path('', base, name='base_view'),
@@ -24,6 +24,11 @@ urlpatterns = [
     path('contact/', contact_view, name='dsc_view'),
     path('about/', about_view, name='dsc_view'),
 
-    re_path('panel/', include('trivial_dummy_admin.urls'))
+    re_path('panel/', include('trivial_dummy_admin.urls')),
+
+    path('cart/new_order/', newOrderView, name='newOrderView'),
+
+    path('admin_panel/<int:pk>/', AdminPanelView, name='admin_panel'),
+
 
 ]

@@ -23,6 +23,7 @@
     <header class="header">
         <div class="header-top">
             <a href="/" class="logo">
+                
                 <img src="{% static 'images\logo.png' %}" alt="">
             </a>
             <div class="header-top-right">
@@ -31,8 +32,8 @@
                     <span>Среднее время доставки 1 час</span>
                 </div>
                 <div class="header-call">
+                        
                     <img src="{% static 'images\phone.png' %}" alt="">
-                    
                     <a href="tel:+998712022020">(71)202-20-20</a>
                 </div>
             </div>
@@ -40,8 +41,8 @@
         <div class="header-bottom">
             <nav class="header-menu">
                 <a href="/" class="header-sticky-logo" style="">
-                    <img src="{% static 'images\logo-no-text.png' %}" alt="">
                     
+                    <img src="{% static 'images\logo-no-text.png' %}" alt="">
                 </a>
                 <ul>
                     <li><a href="/#pizza">Пиццы</a></li>
@@ -51,7 +52,7 @@
                     <li><a href="/#sets">Сеты</a></li>
                     <li><a href="/discounts">Акции</a></li>
                     <li><a href="/vacancy/1">Вакансии</a></li>
-                    <li><a href="/blog">Блог</a></li>
+                    <li><a href="/blog/1">Блог</a></li>
                     <li><a href="/contact">Контакты</a></li>
                     <li><a href="/about">О нас</a></li>
                 </ul>
@@ -72,7 +73,7 @@
                             </span>
                         </div>
                     </div>
-                    <a href="cart/" class="btn-header-cart">Корзина</a>
+                    <a href="/cart/" class="btn-header-cart">Корзина</a>
                     <div class="header-cart-products" id="header_cart">
                         {% for pizza in cart.pizzas.all %}
                         <div class="header-cart-product" id="pizza {{ pizza.id }} {{ cart.id }}">
@@ -162,7 +163,6 @@
                         </div>
                         {% endfor %}
                         
-                        
                         <div class="header-cart-products-sum" id="cart_cost">
                             <span>Сумма заказа:</span>
                             <span>{{ cart_price|floatformat:"0" }} сум</span>
@@ -179,9 +179,9 @@
     <header class="header-mobile">
         <div class="header-panel">
             <div class="header-mobile-logo">
-                <a href="">
-                    <img src="{% static 'images\logo.png' %}" alt="">
+                <a href="/">
                     
+                    <img src="{% static 'images\logo.png' %}" alt="">
                 </a>
             </div>
             <div class="header-toggler">
@@ -191,16 +191,16 @@
         </div>
         <div class="header-mobile-menu">
             <ul>
-                <li><a href="#pizza">Пиццы</a></li>
-                <li><a href="#drinks">Напитки</a></li>
-                <li><a href="#snacks">Закуски</a></li>
-                <li><a href="#sauces">Соусы</a></li>
-                <li><a href="#sets">Сеты</a></li>
-                <li><a href="discounts.html">Акции</a></li>
-                <li><a href="vacancy.html">Вакансии</a></li>
-                <li><a href="blog.html">Блог</a></li>
-                <li><a href="contact.html">Контакты</a></li>
-                <li><a href="about.html">О нас</a></li>
+                <li><a href="/#pizza">Пиццы</a></li>
+                <li><a href="/#drinks">Напитки</a></li>
+                <li><a href="/#snacks">Закуски</a></li>
+                <li><a href="/#sauces">Соусы</a></li>
+                <li><a href="/#sets">Сеты</a></li>
+                <li><a href="/discounts">Акции</a></li>
+                <li><a href="/vacancy/1">Вакансии</a></li>
+                <li><a href="/blog/1">Блог</a></li>
+                <li><a href="/contact">Контакты</a></li>
+                <li><a href="/about">О нас</a></li>
             </ul>
             <div class="header-top-right">
                 <div class="header-delivery">
@@ -208,18 +208,20 @@
                     <span>Среднее время доставки 1 час</span>
                 </div>
                 <div class="header-call">
+                        
                     <img src="{% static 'images\phone.png' %}" alt="">
-                    
                     <a href="tel:+998712022020">(71)202-20-20</a>
                 </div>
             </div>
         </div>
-        <a href="" class="header-mobile-cart">
+        <a href="/cart/" class="header-mobile-cart">
             <i class="fa fa-shopping-basket" aria-hidden="true"></i>
             <span class="header-mobile-cart-number" id="mobile_amount">{{ total_amount }}</span>
         </a>
     </header>
-    <section class="hero-slider">
+    <!-- Header Mobile end  -->
+    <section class="hero-slider"> 
+            
         <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
         <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
         <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
@@ -227,8 +229,8 @@
     </section>
 
     <section class="hero-mobile">
+            
         <img src="{% static 'images\banners\banner-mobile.jpg' %}" alt="">
-        
     </section>
     <section class="main-content">
         <div class="page-cart">
@@ -241,7 +243,7 @@
                     <button type="submit">Применить</button>
                 </form>
             </div>
-            <div class="wrapper">
+            <div class="wrapper" id="cart_wrapper">
                 {% for pizza in cart.pizzas.all %}
                 <div class="cart-card" id="pizza {{ pizza.id }} {{ cart.id }} cart">
                     <div class="cart-card-name">
@@ -250,6 +252,8 @@
                     <div class="cart-card-actions">
                         <div class="cart-card-quantities">
                             <form id='cart pizza {{ pizza.id }} {{ cart.id }}' method='POST' action='#' >
+                                {% csrf_token %}
+
                                 <input type='button' value='-' class='qtyminus' field='quantity'>
                                 <input type='text' name='quantity' value='{{ pizza.quantity }}' class='qty' id="quantity pizza {{ pizza.id }} {{ cart.id }}">
                                 <input type='button' value='+' class='qtyplus' field='quantity'>
@@ -259,7 +263,7 @@
                         <div class="cart-card-price">
                             {{ pizza.price|floatformat:"0" }} сум
                         </div>
-                        <button class="cart-card-delete-btn"><i class="fa fa-close"></i></button>
+                        <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove pizza {{ pizza.id }} {{ cart.id }} cart"></i></button>
 
                     </div>
                 </div>
@@ -272,6 +276,8 @@
                     <div class="cart-card-actions">
                         <div class="cart-card-quantities">
                             <form id='cart drink {{ drink.id }} {{ cart.id }}' method='POST' action='#'>
+                                {% csrf_token %}
+
                                 <input type='button' value='-' class='qtyminus' field='quantity'>
                                 <input type='text' name='quantity' value='{{ drink.quantity }}' class='qty' id='quantity drink {{ drink.id }} {{ cart.id }}'>
                                 <input type='button' value='+' class='qtyplus' field='quantity'>
@@ -281,7 +287,7 @@
                         <div class="cart-card-price">
                             {{ drink.price|floatformat:"0" }} сум
                         </div>
-                        <button class="cart-card-delete-btn"><i class="fa fa-close"></i></button>
+                        <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove drink {{ drink.id }} {{ cart.id }} cart"></i></button>
 
                     </div>
                 </div>
@@ -294,6 +300,8 @@
                     <div class="cart-card-actions">
                         <div class="cart-card-quantities">
                             <form id='cart snack {{ snack.id }} {{ cart.id }}' method='POST' action='#'>
+                                {% csrf_token %}
+
                                 <input type='button' value='-' class='qtyminus' field='quantity'>
                                 <input type='text' name='quantity' value='{{ snack.quantity }}' class='qty' id='quantity snack {{ snack.id }} {{ cart.id }}'>
                                 <input type='button' value='+' class='qtyplus' field='quantity'>
@@ -303,7 +311,7 @@
                         <div class="cart-card-price">
                             {{ snack.price|floatformat:"0" }} сум
                         </div>
-                        <button class="cart-card-delete-btn"><i class="fa fa-close"></i></button>
+                        <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove snack {{ snack.id }} {{ cart.id }} cart"></i></button>
 
                     </div>
                 </div>
@@ -316,6 +324,8 @@
                     <div class="cart-card-actions">
                         <div class="cart-card-quantities">
                             <form id='cart sauce {{ sauce.id }} {{ cart.id }}' method='POST' action='#'>
+                                {% csrf_token %}
+                                
                                 <input type='button' value='-' class='qtyminus' field='quantity'>
                                 <input type='text' name='quantity' value='{{ sauce.quantity }}' class='qty' id='quantity sauce {{ sauce.id }} {{ cart.id }}'>
                                 <input type='button' value='+' class='qtyplus' field='quantity'>
@@ -325,7 +335,7 @@
                         <div class="cart-card-price">
                             {{ sauce.price|floatformat:"0" }} сум
                         </div>
-                        <button class="cart-card-delete-btn"><i class="fa fa-close"></i></button>
+                        <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove sauce {{ sauce.id }} {{ cart.id }} cart"></i></button>
 
                     </div>
                 </div>
@@ -338,6 +348,8 @@
                     <div class="cart-card-actions">
                         <div class="cart-card-quantities">
                             <form id='cart set {{ set.id }} {{ cart.id }}' method='POST' action='#'>
+                                {% csrf_token %}
+
                                 <input type='button' value='-' class='qtyminus' field='quantity'>
                                 <input type='text' name='quantity' value='{{ set.quantity }}' class='qty' id='quantity set {{ set.id }} {{ cart.id }}'>
                                 <input type='button' value='+' class='qtyplus' field='quantity'>
@@ -347,7 +359,7 @@
                         <div class="cart-card-price">
                             {{ set.price|floatformat:"0" }} сум
                         </div>
-                        <button class="cart-card-delete-btn"><i class="fa fa-close"></i></button>
+                        <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove set {{ set.id }} {{ cart.id }} cart"></i></button>
 
                     </div>
                 </div>
@@ -367,6 +379,8 @@
                     <div class="cart-card-actions">
                         <div class="cart-card-quantities">
                             <form id='cart present {{ present.id }} {{ cart.id }}' method='POST' action='#'>
+                                {% csrf_token %}
+
                                 <input type='button' value='-' class='qtyminus' field='quantity'>
                                 {% if cart.presents.all|length == 0  %}
                                     <input type='text' name='quantity' value="0" class='qty' id='quantity present {{ present.id }} {{ cart.id }}'>
@@ -386,39 +400,53 @@
                         <div class="cart-card-price">
                             {{ present.price|floatformat:"0" }} сум
                         </div>
-                        <button class="cart-card-delete-btn"><i class="fa fa-close"></i></button>
 
                     </div>
                 </div>
-                {% endfor %}
+                {% endfor %}  
                 
+            </div>
+            <div class="wrapper checkout">
+                <h2 class="section-title-no-bg">
+                    Оформление заказа
+                </h2>
+                <form action="">
+                    <div>
+                        <input type="text" id="order_name" placeholder="Имя*" required>
+                        <input type="tel" id="order_phone" placeholder="Номер телефона*" required>
+                    </div>
+                    <input type="text" id="order_place" placeholder="Адрес*" required>
+                    <input type="text" id="order_info" placeholder="Дополнительная информация*">
+                </form>
             </div>
             <div class="wrapper">
                 <div class="cart-rec owl-theme owl-carousel">
                     {% for drink in drinks %}
-                    <div class="cart-rec-card">
-                        <div class="cart-rec-card-photo">
-                            <img src="/media/{{drink.picture}}" alt="">
-                        </div>
-                        <div class="cart-rec-card-actions">
-                            <div>
-                                <div class="cart-rec-card-name" id="drinks-name {{ drink.id }}">{{ drink.title }} 0.5 л</div>
-                                {% for price in pricesFV %}
-
-                                {% if price.drink.id == drink.id %}
-                                    {% if price.volume.id == 3 %}
-                                        <div class="cart-rec-card-price">{{ price.price|floatformat:"0" }} сум</div>
-                                    {% endif %}
-                                {% endif %}
-                            
-                                {% endfor %}
-                                
+                    {% if drink.active %}
+                        <div class="cart-rec-card">
+                            <div class="cart-rec-card-photo">
+                                <img src="/media/{{drink.picture}}" alt="">
                             </div>
-                            <button class="add-to-cart" id="cart_drinks {{ drink.id }}">
-                                В корзину
-                            </button>
+                            <div class="cart-rec-card-actions">
+                                <div>
+                                    <div class="cart-rec-card-name" id="drinks-name {{ drink.id }}">{{ drink.title }} 0.5 л</div>
+                                    {% for price in pricesFV %}
+
+                                    {% if price.drink.id == drink.id %}
+                                        {% if price.volume.title == "0,5л" %}
+                                            <div class="cart-rec-card-price" id="drinks-name {{ drink.id }} cart">{{ price.price|floatformat:"0" }} сум</div>
+                                        {% endif %}
+                                    {% endif %}
+                                
+                                    {% endfor %}
+                                    
+                                </div>
+                                <button class="add-to-cart" id="cart_drinks {{ drink.id }}">
+                                    В корзину
+                                </button>
+                            </div>
                         </div>
-                    </div>
+                    {% endif %}
                     {% endfor %}
                     
                 </div>
@@ -431,7 +459,8 @@
                 <div class="sauces cart-sauces">
                         {% for sauce in sauces %}  
                         {% if sauce.active %} 
-                            <form method="POST" class="post-form" id="{{sauce.id}}" name="sauce {{sauce.id}}" >
+                            
+
                                 <div class="sauces-card">
                                     <div class="sauces-photo">
                                             
@@ -441,11 +470,10 @@
                                         {{ sauce.title }}
                                     </h3>
                                     <div class="sauces-actions">
-                                        <button type="submit" class="add-to-cart">В корзину</button>
-                                        <span class="sauces-price">{{ sauce.price|floatformat:"0" }} сум</span>
+                                        <button type="submit" class="add-to-cart" id="cart_sauces {{ sauce.id }}"> В корзину</button>
+                                        <span class="sauces-price" id="sauces-name {{ sauce.id }} cart">{{ sauce.price|floatformat:"0" }} сум</span>
                                     </div>
                                 </div>
-                            </form>
                         {% endif %}
                     {% endfor %}
                     
@@ -458,10 +486,9 @@
                 </div>
             </div>
             <div class="wrapper">
-
                 <div class="cart-btns">
                     <a href="index.html" class="cart-back-btn">Вернуться на главную</a>
-                    <a href="" class="cart-submit-btn add-to-cart">Заказать</a>
+                    <button class="cart-submit-btn add-to-cart" id="order_btn">Заказать</button>
                 </div>
             </div>
         </div>
@@ -473,28 +500,30 @@
     <footer class="footer">
         <div class="wrapper">
             <div class="footer-logo">
-                <a href="index.html">
-                    <img src="images\logo-footer.png" alt="">
+                <a href="/">
+                        
+                    <img src="{% static 'images\logo-footer.png' %}" alt="">
                 </a>
             </div>
             <div class="footer-menu">
                 <ul>
-                    <li><a href="#">Пиццы</a></li>
-                    <li><a href="#">Напитки</a></li>
-                    <li><a href="#">Закуски</a></li>
-                    <li><a href="#">Соусы</a></li>
-                    <li><a href="#">Сеты</a></li>
-                    <li><a href="#">Акции</a></li>
-                    <li><a href="#">Вакансии</a></li>
-                    <li><a href="#">Блог</a></li>
-                    <li><a href="#">Контакты</a></li>
-                    <li><a href="#">О нас</a></li>
+                    <li><a href="/#pizza">Пиццы</a></li>
+                    <li><a href="/#drinks">Напитки</a></li>
+                    <li><a href="/#snacks">Закуски</a></li>
+                    <li><a href="/#sauces">Соусы</a></li>
+                    <li><a href="/#sets">Сеты</a></li>
+                    <li><a href="/discounts">Акции</a></li>
+                    <li><a href="/vacancy/1">Вакансии</a></li>
+                    <li><a href="/blog/1">Блог</a></li>
+                    <li><a href="/contact">Контакты</a></li>
+                    <li><a href="/about">О нас</a></li>
                 </ul>
             </div>
             <div class="footer-numbers">
                 <h4>Зона<br>Доставки</h4>
                 <a href="tel:+998712022020" class="footer-phone">
-                    <img src="images\footer-phone.png" alt="">
+                        
+                    <img src="{% static 'images\footer-phone.png' %}" alt="">
                     (71) 202-20-20
                 </a>
                 <div class="footer-delivery">

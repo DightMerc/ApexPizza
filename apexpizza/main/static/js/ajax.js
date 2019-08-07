@@ -83,6 +83,10 @@ function change_price(event, name){
     price.innerHTML = sender.split(" ")[2] + " сум"
 };
 
+function numberWithSpaces(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
 // AJAX for posting
 function create_post(event) {
     
@@ -127,7 +131,7 @@ function create_post(event) {
                 e.setAttribute("class", "header-cart-product");
                 e.setAttribute("id", 'pizza '+ json.split(" ")[0] +' '+ json.split(" ")[1]);
                 
-                var pizza_title = document.getElementById("pizza-name " + num).innerText
+                var pizza_title = document.getElementById("pizza-name " + num).innerText;
 
                 e.innerHTML = '<button type="button" class="header-cart-product-remove" id="button_created" onclick="button_clicked(this.id)"><i class="fa fa-times" aria-hidden="true" id="remove pizza '+ json.split(" ")[0] +' '+ json.split(" ")[1] +'"></i></button><h5>'+ pizza_title +'</h5><span>'+ json.split(" ")[2] +', '+ json.split(" ")[3] +'</span><div class="amount-controllers"><button class="amount-remove" type="button" name="button" onclick="change_amount(this.id)" id="minus pizza ' + json.split(" ")[0] + ' ' + json.split(" ")[1] +'"><i class="fa fa-minus"></i></button><input type="text" name="name" value="1" id="input_value pizza ' + json.split(" ")[0]  + '"><button class="amount-add"  type="button" name="button" id="plus pizza ' + json.split(" ")[0] + ' ' + json.split(" ")[1] +'" onclick="change_amount(this.id)"><i class="fa fa-plus"></i></button></div>';
                 insert_div.appendChild(e);
@@ -135,9 +139,21 @@ function create_post(event) {
                 var cost = document.getElementById("cart_cost");
                 insert_div.appendChild(cost);
 
-                amount_general = parseInt(document.getElementById("cart_ammount").textContent) + 1
-                document.getElementById("cart_ammount").textContent = amount_general
-                document.getElementById("mobile_amount").textContent = amount_general
+                amount_general = parseInt(document.getElementById("cart_ammount").textContent) + 1;
+                var old_price = document.getElementById("cart_price").textContent.replace("&nbsp;","");
+                old_price = parseInt(old_price);
+
+                if (old_price<1000){
+                    old_price = parseInt(old_price) * 1000;
+                } 
+                var data = json.split(" ")
+                var price = parseInt(old_price) + parseInt(data[data.length-1]);
+                
+
+                document.getElementById("cart_ammount").textContent = amount_general;
+                document.getElementById("cart_price").textContent = numberWithSpaces(price)
+                
+                document.getElementById("mobile_amount").textContent = amount_general;
 
                 
 
@@ -178,6 +194,22 @@ function create_post(event) {
                 document.getElementById("cart_cost").hidden=true;
                 var cost = document.getElementById("cart_cost");
                 insert_div.appendChild(cost);
+
+                amount_general = parseInt(document.getElementById("cart_ammount").textContent) + 1;
+                var old_price = document.getElementById("cart_price").textContent.replace("&nbsp;","");
+                old_price = parseInt(old_price);
+
+                if (old_price<1000){
+                    old_price = parseInt(old_price) * 1000;
+                } 
+                var data = json.split(" ")
+                var price = parseInt(old_price) + parseInt(data[data.length-1]);
+                
+
+                document.getElementById("cart_ammount").textContent = amount_general;
+                document.getElementById("cart_price").textContent = numberWithSpaces(price)
+                
+                document.getElementById("mobile_amount").textContent = amount_general;
             },
 
             // handle a non-successful response
@@ -214,6 +246,22 @@ function create_post(event) {
                 document.getElementById("cart_cost").hidden=true;
                 var cost = document.getElementById("cart_cost");
                 insert_div.appendChild(cost);
+
+                amount_general = parseInt(document.getElementById("cart_ammount").textContent) + 1;
+                var old_price = document.getElementById("cart_price").textContent;
+                old_price = parseInt(old_price);
+
+                if (old_price<1000){
+                    old_price = parseInt(old_price) * 1000;
+                } 
+                var data = json.split(" ")
+                var price = parseInt(old_price) + parseInt(data[data.length-1]);
+                
+
+                document.getElementById("cart_ammount").textContent = amount_general;
+                document.getElementById("cart_price").textContent = numberWithSpaces(price)
+                
+                document.getElementById("mobile_amount").textContent = amount_general;
             },
 
             // handle a non-successful response
@@ -250,6 +298,22 @@ function create_post(event) {
                 document.getElementById("cart_cost").hidden=true;
                 var cost = document.getElementById("cart_cost");
                 insert_div.appendChild(cost);
+
+                amount_general = parseInt(document.getElementById("cart_ammount").textContent) + 1;
+                var old_price = document.getElementById("cart_price").textContent.replace("&nbsp;","");
+                old_price = parseInt(old_price);
+
+                if (old_price<1000){
+                    old_price = parseInt(old_price) * 1000;
+                } 
+                var data = json.split(" ")
+                var price = parseInt(old_price) + parseInt(data[data.length-1]);
+                
+
+                document.getElementById("cart_ammount").textContent = amount_general;
+                document.getElementById("cart_price").textContent = numberWithSpaces(price)
+                
+                document.getElementById("mobile_amount").textContent = amount_general;
             },
 
             // handle a non-successful response
@@ -287,6 +351,22 @@ function create_post(event) {
                 document.getElementById("cart_cost").hidden=true;
                 var cost = document.getElementById("cart_cost");
                 insert_div.appendChild(cost);
+
+                amount_general = parseInt(document.getElementById("cart_ammount").textContent) + 1;
+                var old_price = document.getElementById("cart_price").textContent.replace("&nbsp;","");
+                old_price = parseInt(old_price);
+
+                if (old_price<1000){
+                    old_price = parseInt(old_price) * 1000;
+                } 
+                var data = json.split(" ")
+                var price = parseInt(old_price) + parseInt(data[data.length-1]);
+                
+
+                document.getElementById("cart_ammount").textContent = amount_general;
+                document.getElementById("cart_price").textContent = numberWithSpaces(price)
+                
+                document.getElementById("mobile_amount").textContent = amount_general;
             },
 
             // handle a non-successful response
@@ -316,13 +396,24 @@ function button_clicked(sender){
     }
     if (sender.includes("remove")){
         if (sender.includes("pizza")){
-            console.log("tut")
             var father = document.getElementById(sender.replace("remove ", ""));
-            father.parentNode.removeChild(father);
-            
-            if (document.getElementById(sender.replace("remove ", "") + " cart")!==NaN){
-                var father = document.getElementById(sender.replace("remove ", "") + " cart");
+            if (sender.includes("cart")){
                 father.parentNode.removeChild(father);
+
+                var father = document.getElementById(sender.replace("remove ", "").replace(" cart", ""));
+                father.parentNode.removeChild(father);
+
+            } else {
+
+                father.parentNode.removeChild(father);
+                if (document.getElementById(sender.replace("remove ", "") + " cart")!==null){
+                    console.log(document.getElementById(sender.replace("remove ", "") + " cart"))
+                    var father = document.getElementById(sender.replace("remove ", "") + " cart");
+                    console.log(father)
+
+                    father.parentNode.removeChild(father);
+                }
+                
             }
             
 
@@ -353,13 +444,27 @@ function button_clicked(sender){
             }
         });
         }   else if (sender.includes("drink")){
-            var father = document.getElementById(sender.replace("remove ", ""));
-            father.parentNode.removeChild(father);
 
-            if (document.getElementById(sender.replace("remove ", "") + " cart")!==NaN){
-                var father = document.getElementById(sender.replace("remove ", "") + " cart");
+            var father = document.getElementById(sender.replace("remove ", ""));
+            if (sender.includes("cart")){
                 father.parentNode.removeChild(father);
+
+                var father = document.getElementById(sender.replace("remove ", "").replace(" cart", ""));
+                father.parentNode.removeChild(father);
+
+            } else {
+
+                father.parentNode.removeChild(father);
+                if (document.getElementById(sender.replace("remove ", "") + " cart")!==null){
+
+                    var father = document.getElementById(sender.replace("remove ", "") + " cart");
+                    console.log(father)
+
+                    father.parentNode.removeChild(father);
+                }
+                
             }
+
 
             var drink_num = sender.split(" ")[2]
             var order_num = sender.split(" ")[3]
@@ -388,11 +493,23 @@ function button_clicked(sender){
         });
         }   else if (sender.includes("snack")){
             var father = document.getElementById(sender.replace("remove ", ""));
-            father.parentNode.removeChild(father);
-
-            if (document.getElementById(sender.replace("remove ", "") + " cart")!==NaN){
-                var father = document.getElementById(sender.replace("remove ", "") + " cart");
+            if (sender.includes("cart")){
                 father.parentNode.removeChild(father);
+
+                var father = document.getElementById(sender.replace("remove ", "").replace(" cart", ""));
+                father.parentNode.removeChild(father);
+
+            } else {
+
+                father.parentNode.removeChild(father);
+                if (document.getElementById(sender.replace("remove ", "") + " cart")!==null){
+
+                    var father = document.getElementById(sender.replace("remove ", "") + " cart");
+                    console.log(father)
+
+                    father.parentNode.removeChild(father);
+                }
+                
             }
             
 
@@ -424,13 +541,24 @@ function button_clicked(sender){
         });
         }   else if (sender.includes("sauce")){
             var father = document.getElementById(sender.replace("remove ", ""));
-            father.parentNode.removeChild(father);
-
-            if (document.getElementById(sender.replace("remove ", "") + " cart")!==NaN){
-                var father = document.getElementById(sender.replace("remove ", "") + " cart");
+            if (sender.includes("cart")){
                 father.parentNode.removeChild(father);
+
+                var father = document.getElementById(sender.replace("remove ", "").replace(" cart", ""));
+                father.parentNode.removeChild(father);
+
+            } else {
+
+                father.parentNode.removeChild(father);
+                if (document.getElementById(sender.replace("remove ", "") + " cart")!==null){
+
+                    var father = document.getElementById(sender.replace("remove ", "") + " cart");
+                    console.log(father)
+
+                    father.parentNode.removeChild(father);
+                }
+                
             }
-            
 
             var sauce_num = sender.split(" ")[2]
             var order_num = sender.split(" ")[3]
@@ -459,13 +587,24 @@ function button_clicked(sender){
         });
         }   else if (sender.includes("set")){
             var father = document.getElementById(sender.replace("remove ", ""));
-            father.parentNode.removeChild(father);
-
-            if (document.getElementById(sender.replace("remove ", "") + " cart")!==NaN){
-                var father = document.getElementById(sender.replace("remove ", "") + " cart");
+            if (sender.includes("cart")){
                 father.parentNode.removeChild(father);
+
+                var father = document.getElementById(sender.replace("remove ", "").replace(" cart", ""));
+                father.parentNode.removeChild(father);
+
+            } else {
+
+                father.parentNode.removeChild(father);
+                if (document.getElementById(sender.replace("remove ", "") + " cart")!==null){
+
+                    var father = document.getElementById(sender.replace("remove ", "") + " cart");
+                    console.log(father)
+
+                    father.parentNode.removeChild(father);
+                }
+                
             }
-            
             
             var set_num = sender.split(" ")[2]
             var order_num = sender.split(" ")[3]
@@ -494,11 +633,23 @@ function button_clicked(sender){
         });
         } else if (sender.includes("present")){
             var father = document.getElementById(sender.replace("remove ", ""));
-            father.parentNode.removeChild(father);
-
-            if (document.getElementById(sender.replace("remove ", "") + " cart")!==NaN){
-                var father = document.getElementById(sender.replace("remove ", "") + " cart");
+            if (sender.includes("cart")){
                 father.parentNode.removeChild(father);
+
+                var father = document.getElementById(sender.replace("remove ", "").replace(" cart", ""));
+                father.parentNode.removeChild(father);
+
+            } else {
+
+                father.parentNode.removeChild(father);
+                if (document.getElementById(sender.replace("remove ", "") + " cart")!==null){
+
+                    var father = document.getElementById(sender.replace("remove ", "") + " cart");
+                    console.log(father)
+
+                    father.parentNode.removeChild(father);
+                }
+                
             }
             
             
@@ -555,6 +706,95 @@ function button_clicked(sender){
                 document.getElementById("cart_cost").hidden=true;
                 var cost = document.getElementById("cart_cost");
                 insert_div.appendChild(cost);
+
+                var insert_div = document.getElementById("cart_wrapper");
+                var e = document.createElement('div');
+                e.setAttribute("class", "cart-card");
+                e.setAttribute("id", 'drink '+ json.split(" ")[0] +' '+ json.split(" ")[1] + ' cart');
+
+                var drink_title = document.getElementById("drinks-name " + num).innerText
+                var drink_price = document.getElementById("drinks-name " + num + " cart").innerText
+
+                e.innerHTML = '<div class="cart-card-name"> <h4>'+drink_title+'</h4> </div> <div class="cart-card-actions"> <div class="cart-card-quantities"> <form id="cart drink '+json.split(" ")[0] +' '+ json.split(" ")[1]+'" method="POST" action="#" > <input type="button" value="-"" class="qtyminus" id="action - '+json.split(" ")[0] +' '+ json.split(" ")[1]+'" onclick="button_clicked1(this)" field="quantity"> <input type="text" name="quantity" value="1" class="qty" id="quantity drink '+ json.split(" ")[0] + ' ' + json.split(" ")[1] +'"> <input type="button" value="+" class="qtyplus" id="action + '+json.split(" ")[0] +' '+ json.split(" ")[1]+'" onclick="button_clicked1(this)" field="quantity"> </form> </div> <div class="cart-card-price"> '+ drink_price +'</div> <button class="cart-card-delete-btn" ><i class="fa fa-close" onclick="button_clicked(this.id)" id="remove drink '+ json.split(" ")[0] + ' ' + json.split(" ")[1] +' cart"></i></button> </div>';
+                insert_div.appendChild(e);
+
+                
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    } else if (sender.includes("cart_sauces")){
+        var num = sender.replace("cart_sauces ", "");
+        
+        $.ajax({
+            url : "temp/"+num+"/", // the endpoint
+            type : "POST", // http method
+            data : { object : "sauce"}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+                var insert_div = document.getElementById("header_cart");
+                var e = document.createElement('div');
+                e.setAttribute("class", "header-cart-product");
+                e.setAttribute("id", 'sauce '+ json.split(" ")[0] +' '+ json.split(" ")[1]);
+
+                var title = document.getElementById("sauces-name " + num).innerText
+
+                e.innerHTML = '<button type="button" class="header-cart-product-remove" id="button_created" onclick="button_clicked(this.id)"><i class="fa fa-times" aria-hidden="true" id="remove sauce '+ json.split(" ")[0] +' '+ json.split(" ")[1] +'"></i></button><h5>'+ title +'</h5><div class="amount-controllers"><button class="amount-remove" type="button" name="button" onclick="change_amount(this.id)" id="minus sauce ' + json.split(" ")[0] + ' ' + json.split(" ")[1] +'"><i class="fa fa-minus"></i></button><input type="text" name="name" value="1" id="input_value sauce ' + json.split(" ")[0]  + '"><button class="amount-add" type="button" name="button" onclick="change_amount(this.id)" id="plus sauce ' + json.split(" ")[0] + ' ' + json.split(" ")[1] +'"><i class="fa fa-plus"></i></button></div>';
+                insert_div.appendChild(e);
+                document.getElementById("cart_cost").hidden=true;
+                var cost = document.getElementById("cart_cost");
+                insert_div.appendChild(cost);
+
+                var insert_div = document.getElementById("cart_wrapper");
+                var e = document.createElement('div');
+                e.setAttribute("class", "cart-card");
+                e.setAttribute("id", 'sauce '+ json.split(" ")[0] +' '+ json.split(" ")[1] + ' cart');
+
+                var title = document.getElementById("sauces-name " + num).innerText
+                var price = document.getElementById("sauces-name " + num + " cart").innerText
+
+                e.innerHTML = '<div class="cart-card-name"> <h4>'+title+'</h4> </div> <div class="cart-card-actions"> <div class="cart-card-quantities"> <form id="cart sauce '+json.split(" ")[0] +' '+ json.split(" ")[1]+'" method="POST" action="#" > <input type="button" value="-"" class="qtyminus" id="action - '+json.split(" ")[0] +' '+ json.split(" ")[1]+'" onclick="button_clicked1(this)" field="quantity"> <input type="text" name="quantity" value="1" class="qty" id="quantity sauce '+ json.split(" ")[0] + ' ' + json.split(" ")[1] +'"> <input type="button" value="+" class="qtyplus" id="action + '+json.split(" ")[0] +' '+ json.split(" ")[1]+'" onclick="button_clicked1(this)" field="quantity"> </form> </div> <div class="cart-card-price"> '+ price +'</div> <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove sauce '+ json.split(" ")[0] + ' ' + json.split(" ")[1] +' cart"></i></button> </div>';
+                insert_div.appendChild(e);
+
+                
+            },
+
+            // handle a non-successful response
+            error : function(xhr,errmsg,err) {
+                $('#results').html("<div class='alert-box alert radius' data-alert>Oops! We have encountered an error: "+errmsg+
+                    " <a href='#' class='close'>&times;</a></div>"); // add the error to the dom
+                console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+            }
+        });
+    } else if (sender.includes("order_btn")){
+        name = document.getElementById("order_name").value;
+        phone = document.getElementById("order_phone").value;
+        place = document.getElementById("order_place").value;
+        info = document.getElementById("order_info").value;
+        $.ajax({
+            url : "new_order/", // the endpoint
+            type : "POST", // http method
+            
+
+            data : { name : name, phone : phone, place : place, info : info}, // data sent with the post request
+
+            // handle a successful response
+            success : function(json) {
+                $('#post-text').val(''); // remove the value from the input
+                console.log(json); // log the returned json to the console
+                console.log("success"); // another sanity check
+                
+
+                
             },
 
             // handle a non-successful response
@@ -566,6 +806,23 @@ function button_clicked(sender){
         });
     }
 };
+
+function button_clicked1(sender){
+    if (sender.id.includes("action")){
+
+        var action = sender.id.replace("action ")
+        if (action.includes("-")){
+            sender = document.getElementById(sender.id)
+            console.log(sender)
+            minusik(sender)
+        } else {
+            sender = document.getElementById(sender.id)
+            console.log(sender)
+            plusik(sender)
+        }
+    }
+
+}
 
 
 function change_amount(sender, type){
@@ -585,14 +842,30 @@ function change_amount(sender, type){
                     console.log(json); // log the returned json to the console
                     console.log("success"); // another sanity check
 
+                    var old_price = document.getElementById("cart_price").textContent.replace("&nbsp;","");
+                    old_price = parseInt(old_price);
+
+                    if (old_price<1000){
+                        old_price = parseInt(old_price) * 1000;
+                    } 
+                    var data = json.split(" ");
+
+
                     if (operation === "minus"){
                         var amount_general = parseInt(document.getElementById("cart_ammount").textContent) - 1;
+                        var price = parseInt(old_price) - parseInt(data[data.length-1]);
+                        
                     } else {
                         var amount_general = parseInt(document.getElementById("cart_ammount").textContent) + 1;
+                        var price = parseInt(old_price) + parseInt(data[data.length-1]);
+
                     }
                     document.getElementById("cart_ammount").textContent = amount_general;
                     document.getElementById("mobile_amount").textContent = amount_general;
-                    document.getElementById("cart_price").textContent = json.split(" ")[1];
+                    document.getElementById("cart_price").textContent = numberWithSpaces(price);
+
+
+                    
 
                     if (type){
 
@@ -602,12 +875,12 @@ function change_amount(sender, type){
 
                             father.parentNode.removeChild(father);
 
-                            if (document.getElementById(sender.replace(operation + " ","") + " cart")!==NaN){
+                            if (document.getElementById(sender.replace(operation + " ","") + " cart")!==null){
                                 var father = document.getElementById(sender.replace(operation + " ","") + " cart");
                                 father.parentNode.removeChild(father);
                             }
 
-                            document.getElementById("cart_price").textContent = json.split(" ")[1];
+                            //document.getElementById("cart_price").textContent = json.split(" ")[1];
 
 
                             
@@ -616,7 +889,6 @@ function change_amount(sender, type){
                             var father = document.getElementById(sender.replace(operation + " ",""));
                             
                             
-                            console.log(json.split(" ")[1]);
                         }
                     }
 
