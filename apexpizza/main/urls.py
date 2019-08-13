@@ -1,7 +1,7 @@
 from django.urls import path, re_path, include
 from .views import base
 from .views import temp_order, getTempOrder, removeProduct, changeAmount, CartShow
-from .views import discounts_view, vacancy_view, blog_view, blog_view_detailed, contact_view, about_view, newOrderView, AdminPanelView
+from .views import discounts_view, vacancy_view, blog_view, blog_view_detailed, contact_view, about_view, newOrderView, AdminPanelView, AdminPanelViewSingle, orderCountView, getOrderView,url_redirect, toggleOrder_view, closeOrder_view, archievedordersView, AdminPanelViewArchievedSingle
 
 urlpatterns = [
     path('', base, name='base_view'),
@@ -17,7 +17,10 @@ urlpatterns = [
 
     path('discounts/', discounts_view, name='dsc_view'),
     path('vacancy/<int:pk>/', vacancy_view, name='vcn_view'),
+    path('vacancy/', url_redirect, name='blg_view'),
+
     
+    path('blog/', url_redirect, name='blg_view'),
     path('blog/<int:pk>/', blog_view, name='blg_view'),
     path('blog/<int:pk>/detail/', blog_view_detailed, name='blg_view'),
 
@@ -29,6 +32,20 @@ urlpatterns = [
     path('cart/new_order/', newOrderView, name='newOrderView'),
 
     path('admin_panel/<int:pk>/', AdminPanelView, name='admin_panel'),
+    path('admin_panel/', url_redirect, name='admin_panel'),
+
+    path('admin_panel/<int:pk>/detail/', AdminPanelViewSingle, name='admin_panel2'),
+    path('admin_panel/count/', orderCountView, name='admin_panel3'),
+    path('admin_panel/archieved/<int:pk>/', archievedordersView, name='admin_panel7'),
+    path('admin_panel/archieved/<int:pk>/detail/', AdminPanelViewArchievedSingle, name='admin_panel8'),
 
 
+
+    path('get_order/<int:pk>/', getOrderView, name='admin_panel4'),
+
+    path('order_toggle/<int:pk>/', toggleOrder_view, name='admin_panel5'),
+    path('close_order/<int:pk>/', closeOrder_view, name='admin_panel6'),
+
+
+    
 ]

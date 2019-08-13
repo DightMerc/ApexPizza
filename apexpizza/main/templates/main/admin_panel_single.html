@@ -1,0 +1,236 @@
+{% load static %}
+{% load my_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Apex Pizza - Доставка пиццы в Ташкенте! Среднее время доставки 1 час</title>
+    <link rel="stylesheet" href="{% static 'css\font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'slick\slick-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'slick\slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css\owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css\owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css\style.css' %}">
+    <link rel="stylesheet" href="{% static 'css\fonts.css' %}">
+    <link rel="shortcut icon" href="{% static 'images\favapex.ico' %}" type="image/x-icon">
+</head>
+
+<body>
+        <header class="header">
+            <div class="header-top">
+                <a href="/admin_panel/1" class="logo">
+                    <img src="{% static 'images\logo.png' %}" alt="">
+                </a>
+                <div class="header-top-right">
+                    <div class="header-delivery">
+                        <span >Доставка пиццы</span>
+                        <span>Среднее время доставки 1 час</span>
+                    </div>
+                    <div class="header-call">
+                        <img src="{% static 'images\phone.png' %}" alt="">
+                        
+                        <a href="tel:+998712022020">(71)202-20-20</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    
+
+    <section class="hero-mobile">
+            <img src="{% static 'images\banners\banner-mobile.jpg' %}" alt="">
+        
+    </section>
+    <section class="main-content">
+        <div class="blog">
+            <div class="wrapper">
+                <h2 class="section-title-no-bg" id="order_title">
+                    Заказ № “{{ order.title }}”
+                </h2>
+
+                <div class="posts">
+                    <article class="post-card">
+                        
+                        <div class="post-card-text">
+                            
+                                <ul>
+                                    <li><b>Клиент: </b>{{ order.user }}</li>
+                                    <li><b>Адрес: </b>{{ order.address }}</li>
+                                    <li><b>Инфо: </b>{{ order.info }}</li>
+                                                                        
+                                </ul>
+                        </div>
+                        <div class="wrapper">
+                            {% if order.active %}
+                                <div class="cart-btns">
+                                    <button  class="cart-back-btn" id="admin_panel_order_accept">Отменить</button>
+                                </div>
+                            {% else %}
+                                <div class="cart-btns">
+                                    <button  class="cart-back-btn" id="admin_panel_order_accept">Подтвердить</button>
+                                </div>
+                            {% endif %}
+
+                        </div>
+
+                    </article>
+                    {% available order.pizzas.all as flag %}
+                    {% if flag %}          
+                    <article class="post-card">
+                            
+                            <div class="post-card-text">
+                                    <h2>Пиццы:</h2>
+                                    {% for pizza in order.pizzas.all %}
+                                            <li>_</li>
+                                            <h4>{{ pizza.title }} {{ pizza.size }}:</h4>
+                                            <ul>
+                                                <li>Количество: {{ pizza.quantity }}</li>
+                                                {% for topping in pizza.toppings.all %}
+                                                <ul>
+                                                    <li>+{{topping.title}}</li>
+                                                </ul>
+                                                {% endfor %}
+
+                                                <li>Тесто: {{ pizza.doughType }}</li>
+
+    
+                                            </ul>
+                                    {% endfor %}
+                            </div>
+                    </article>
+
+                    {% endif %}
+
+                    {% available order.drinks.all as flag %}
+                    {% if flag %}
+                    <article class="post-card">
+                            
+                            <div class="post-card-text">
+                                    <h2>Напитки:</h2>
+                                    {% for drink in order.drinks.all %}
+                                            <li>_</li>
+                                            <h4>{{ drink.title }} {{ drink.volume }}:</h4>
+                                            <ul>
+                                                <li>Количество: {{ drink.quantity }}</li>
+    
+                                            </ul>
+    
+                                    {% endfor %}
+                            </div>
+                            
+                    </article>
+
+                    {% endif %}
+
+                    {% available order.snacks.all as flag %}
+                    {% if flag %}
+                    <article class="post-card">
+                            
+                            <div class="post-card-text">
+                                    <h2>Закуски:</h2>
+                                    {% for snack in order.snacks.all %}
+                                            <li>_</li>
+                                            <h4>{{ snack.title }}:</h4>
+                                            <ul>
+                                                <li>Количество: {{ snack.quantity }}</li>
+    
+                                            </ul>
+    
+                                    {% endfor %}
+                            </div>
+
+                    </article>
+                    {% endif %}
+
+
+                    {% available order.sauces.all as flag %}
+                    {% if flag %}
+                    <article class="post-card">
+                            
+                            <div class="post-card-text">
+                                    <h2>Соусы:</h2>
+                                    {% for sauce in order.sauces.all %}
+                                            <li>_</li>
+                                            <h4>{{ sauce.title }} {{ sauce.volume }}:</h4>
+                                            <ul>
+                                                <li>Количество: {{ sauce.quantity }}</li>
+    
+                                            </ul>
+    
+                                    {% endfor %}
+                            </div>
+
+                    </article>
+                    {% endif %}
+
+                    
+                    {% available order.sets.all as flag %}
+                    {% if flag %}
+                    <article class="post-card">
+                            
+                            <div class="post-card-text">
+                                    <h2>Сеты:</h2>
+                                    {% for set in order.sets.all %}
+                                            <li>_</li>
+                                            <h4>{{ set.title }} {{ set.volume }}:</h4>
+                                            <ul>
+                                                <li>Количество: {{ set.quantity }}</li>
+    
+                                            </ul>
+    
+                                    {% endfor %}
+                            </div>
+
+                    </article>
+                    {% endif %}
+
+
+                    {% available order.presents.all as flag %}
+                    {% if flag %}
+                    <article class="post-card">
+                            
+                            <div class="post-card-text">
+                                    <h2>Подарки:</h2>
+                                    {% for present in order.presents.all %}
+                                            <li>_</li>
+                                            <h4>{{ present.title }} {{ present.volume }}:</h4>
+                                            <ul>
+                                                <li>Количество: {{ present.quantity }}</li>
+    
+                                            </ul>
+    
+                                    {% endfor %}
+                            </div>
+
+                            
+                    </article>
+                    {% endif %}
+
+                        </div>
+                        
+                    </article>
+                    
+                </div>
+                
+                
+            </div>
+            
+        </div>
+    </section>
+
+
+    
+    <script src="{% static 'js\jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js\owl.carousel.min.js' %}"></script>
+    <script src="{% static 'slick\slick.min.js' %}"></script>
+    <script src="{% static 'js\script.js' %}"></script>
+    <script src="{% static 'js\ajax.js' %}"></script>
+
+</body>
+
+</html>

@@ -1,12 +1,12 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Pizza, AnonymousUser, TempOrder, TempPizza, Size, DoughType, Topping, Drink, TempDrink, Volume, PriceForSize, PriceForVolume
 from .models import Snack, Sauce, Set
-from .models import TempSnack, TempSauce, TempSet, Present, TempPresent, Discount, Vacancy, BlogPost, Order, User, Order
+from .models import TempSnack, TempSauce, TempSet, Present, TempPresent, Discount, Vacancy, BlogPost, Order, User, Order, HeaderImage, HeaderMobileImage, ArchievedOrder
 import json
 
 from django.core.paginator import Paginator
 
-from django.http import JsonResponse, HttpResponse, response
+from django.http import JsonResponse, HttpResponse, response, HttpResponsePermanentRedirect
 
 import logging 
 
@@ -16,6 +16,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import generics
+import plural_ru
 
 
 # Create your views here.
@@ -40,7 +41,17 @@ def base(request):
 
    temp_orders = TempOrder.objects.all()
    temp_order = None
+
    
+
+   try:
+      cashback = User.objects.get(link=user_num).cashback
+   except Exception as e:
+      cashback = "0"
+
+   header_images = HeaderImage.objects.all()
+   
+
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
@@ -82,7 +93,9 @@ def base(request):
       for element in temp_order.sets.all():
          total_amount += element.quantity
 
-   return render(request, 'main/index.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "total_amount":total_amount})
+   product_counter_text = plural_ru.ru(total_amount, ["товар","товара", "товаров"])
+
+   return render(request, 'main/index.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "total_amount":total_amount, "product_counter_text":product_counter_text, "cashback":cashback, "header_images":header_images, "mobile_image":HeaderMobileImage.objects.get(pk=1)})
 
 def removeProduct(request):
    user_num = request.session.get('user')
@@ -98,7 +111,7 @@ def removeProduct(request):
 
          order.pizzas.remove(pizza)
 
-         return HttpResponse("Pizza removed from order " + str(order_num))
+         return HttpResponse("Pizza removed from order " + str(order_num) + " " + str(pizza.quantity) + " " + str(pizza.price) )
       elif request.POST.get("object") == "drink":
          drink_num = int(request.POST.get("number"))
          order_num = int(request.POST.get("order_number"))
@@ -108,7 +121,7 @@ def removeProduct(request):
 
          order.drinks.remove(drink)
 
-         return HttpResponse("Drink removed from order " + str(order_num))
+         return HttpResponse("Drink removed from order " + str(order_num) + " " + str(drink.quantity) + " " + str(drink.price))
       elif request.POST.get("object") == "snack":
          snack_num = int(request.POST.get("number"))
          order_num = int(request.POST.get("order_number"))
@@ -118,7 +131,7 @@ def removeProduct(request):
 
          order.snacks.remove(snack)
 
-         return HttpResponse("Snack removed from order " + str(order_num))
+         return HttpResponse("Snack removed from order " + str(order_num) + " " + str(snack.quantity) + " " + str(snack.price))
       elif request.POST.get("object") == "sauce":
          sauce_num = int(request.POST.get("number"))
          order_num = int(request.POST.get("order_number"))
@@ -128,7 +141,7 @@ def removeProduct(request):
 
          order.sauces.remove(sauce)
 
-         return HttpResponse("Sauce removed from order " + str(order_num))
+         return HttpResponse("Sauce removed from order " + str(order_num) + " " + str(sauce.quantity) + " " + str(sauce.price))
       elif request.POST.get("object") == "set":
          set_num = int(request.POST.get("number"))
          order_num = int(request.POST.get("order_number"))
@@ -138,7 +151,7 @@ def removeProduct(request):
 
          order.sets.remove(_set)
 
-         return HttpResponse("Set removed from order " + str(order_num))
+         return HttpResponse("Set removed from order " + str(order_num) + " " + str(_set.quantity) + " " + str(_set.price))
       elif request.POST.get("object") == "present":
          present_num = int(request.POST.get("number"))
          order_num = int(request.POST.get("order_number"))
@@ -148,7 +161,7 @@ def removeProduct(request):
 
          order.presents.remove(present)
 
-         return HttpResponse("Present removed from order " + str(order_num))
+         return HttpResponse("Present removed from order " + str(order_num) + " " + str(present.quantity) + " " + str(present.price))
          
 
 def temp_order(request, pk):
@@ -556,44 +569,34 @@ def CartShow(request):
 
    temp_order = None
 
+   try:
+      cashback = User.objects.get(link=user_num).cashback
+   except Exception as e:
+      cashback = "0"
+
+   header_images = HeaderImage.objects.all()
+
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
             for pizza in order.pizzas.all():
-               cart_num += 1
-               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price * pizza.quantity
 
             for drink in order.drinks.all():
-               cart_num += 1
-               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price * drink.quantity
 
             for snack in order.snacks.all():
-               cart_num += 1
-               cart_price += snack.price
+               cart_price += snack.price * snack.quantity
 
             for sauce in order.sauces.all():
-               cart_num += 1
-               cart_price += sauce.price
+               cart_price += sauce.price * sauce.quantity
 
             for _set in order.sets.all():
-               cart_num += 1
-               cart_price += _set.price
-
-            for element in temp_order.pizzas.all():
-               total_amount += element.quantity
-            for element in temp_order.drinks.all():
-               total_amount += element.quantity
-            for element in temp_order.snacks.all():
-               total_amount += element.quantity
-            for element in temp_order.sauces.all():
-               total_amount += element.quantity
-            for element in temp_order.sets.all():
-               total_amount += element.quantity
+               cart_price += _set.price * _set.quantity
    else:
       temp_order = None
-      
 
 
 
@@ -601,10 +604,27 @@ def CartShow(request):
    num_visits=request.session.get('num_visits', 0)
    request.session['num_visits'] = num_visits+1
 
+   total_amount = 0
+   if temp_order!=None:
+      for element in temp_order.pizzas.all():
+         total_amount += element.quantity
+      for element in temp_order.drinks.all():
+         total_amount += element.quantity
+      for element in temp_order.snacks.all():
+         total_amount += element.quantity
+      for element in temp_order.sauces.all():
+         total_amount += element.quantity
+      for element in temp_order.sets.all():
+         total_amount += element.quantity
+
+   
+   product_counter_text = plural_ru.ru(total_amount, ["товар","товара", "товаров"])
+
+
    
    
 
-   return render(request, 'main/cart.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "presents": presents})
+   return render(request, 'main/cart.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "presents": presents, "product_counter_text":product_counter_text,"cashback":cashback, "header_images":header_images, "mobile_image":HeaderMobileImage.objects.get(pk=1)})
 
    
 
@@ -634,33 +654,34 @@ def discounts_view(request):
    temp_orders = TempOrder.objects.all()
 
    temp_order = None
+
+   try:
+      cashback = User.objects.get(link=user_num).cashback
+   except Exception as e:
+      cashback = "0"
+
+   header_images = HeaderImage.objects.all()
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
             for pizza in order.pizzas.all():
-               cart_num += 1
-               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price * pizza.quantity
 
             for drink in order.drinks.all():
-               cart_num += 1
-               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price * drink.quantity
 
             for snack in order.snacks.all():
-               cart_num += 1
-               cart_price += snack.price
+               cart_price += snack.price * snack.quantity
 
             for sauce in order.sauces.all():
-               cart_num += 1
-               cart_price += sauce.price
+               cart_price += sauce.price * sauce.quantity
 
             for _set in order.sets.all():
-               cart_num += 1
-               cart_price += _set.price
+               cart_price += _set.price * _set.quantity
    else:
       temp_order = None
-      
 
 
 
@@ -681,7 +702,9 @@ def discounts_view(request):
       for element in temp_order.sets.all():
          total_amount += element.quantity
 
-   return render(request, 'main/discounts.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "discounts": discounts})
+   product_counter_text = plural_ru.ru(total_amount, ["товар","товара", "товаров"])
+
+   return render(request, 'main/discounts.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "discounts": discounts, "product_counter_text":product_counter_text, "cashback":cashback, "header_images":header_images, "mobile_image":HeaderMobileImage.objects.get(pk=1)})
 
 def vacancy_view(request, pk):
    pizzas = Pizza.objects.all()
@@ -738,33 +761,34 @@ def vacancy_view(request, pk):
 
    temp_order = None
 
+   try:
+      cashback = User.objects.get(link=user_num).cashback
+   except Exception as e:
+      cashback = "0"
+
+   header_images = HeaderImage.objects.all()
+
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
             for pizza in order.pizzas.all():
-               cart_num += 1
-               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price * pizza.quantity
 
             for drink in order.drinks.all():
-               cart_num += 1
-               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price * drink.quantity
 
             for snack in order.snacks.all():
-               cart_num += 1
-               cart_price += snack.price
+               cart_price += snack.price * snack.quantity
 
             for sauce in order.sauces.all():
-               cart_num += 1
-               cart_price += sauce.price
+               cart_price += sauce.price * sauce.quantity
 
             for _set in order.sets.all():
-               cart_num += 1
-               cart_price += _set.price
+               cart_price += _set.price * _set.quantity
    else:
       temp_order = None
-      
 
 
 
@@ -785,7 +809,10 @@ def vacancy_view(request, pk):
       for element in temp_order.sets.all():
          total_amount += element.quantity
 
-   return render(request, 'main/vacancy.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "vacancies": pagination.page(pk).object_list,"page_count":page_count, "current_page": current_page, "prev":prev_page, "next":next_page})
+   product_counter_text = plural_ru.ru(total_amount, ["товар","товара", "товаров"])
+   
+
+   return render(request, 'main/vacancy.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "vacancies": pagination.page(pk).object_list,"page_count":page_count, "current_page": current_page, "prev":prev_page, "next":next_page, "product_counter_text":product_counter_text, "cashback":cashback, "header_images":header_images, "mobile_image":HeaderMobileImage.objects.get(pk=1)})
 
 
 
@@ -801,7 +828,7 @@ def blog_view(request, pk):
    pagination = Paginator(posts, 6)
 
    
-
+   
    page_count = []
    a = 0
    while a<pagination.num_pages:
@@ -846,30 +873,32 @@ def blog_view(request, pk):
 
    temp_order = None
 
+   try:
+      cashback = User.objects.get(link=user_num).cashback
+   except Exception as e:
+      cashback = "0"
+
+   header_images = HeaderImage.objects.all()
+
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
             for pizza in order.pizzas.all():
-               cart_num += 1
-               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price * pizza.quantity
 
             for drink in order.drinks.all():
-               cart_num += 1
-               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price * drink.quantity
 
             for snack in order.snacks.all():
-               cart_num += 1
-               cart_price += snack.price
+               cart_price += snack.price * snack.quantity
 
             for sauce in order.sauces.all():
-               cart_num += 1
-               cart_price += sauce.price
+               cart_price += sauce.price * sauce.quantity
 
             for _set in order.sets.all():
-               cart_num += 1
-               cart_price += _set.price
+               cart_price += _set.price * _set.quantity
    else:
       temp_order = None
 
@@ -892,7 +921,10 @@ def blog_view(request, pk):
       for element in temp_order.sets.all():
          total_amount += element.quantity
 
-   return render(request, 'main/blog.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "posts": posts, "page_count":page_count, "next": next_page, "prev": prev_page, "current_page": current_page})
+   product_counter_text = plural_ru.ru(total_amount, ["товар","товара", "товаров"])
+   
+
+   return render(request, 'main/blog.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "posts": posts, "page_count":page_count, "next": next_page, "prev": prev_page, "current_page": current_page, "product_counter_text":product_counter_text, "cashback":cashback, "header_images":header_images, "mobile_image":HeaderMobileImage.objects.get(pk=1)})
 
 
 def blog_view_detailed(request, pk):
@@ -916,6 +948,13 @@ def blog_view_detailed(request, pk):
    cart_price = 0
    cart_num = 0
    temp_order = None
+
+   try:
+      cashback = User.objects.get(link=user_num).cashback
+   except Exception as e:
+      cashback = "0"
+
+   header_images = HeaderImage.objects.all()
    temp_orders = TempOrder.objects.all()
    if len(temp_orders)>0:
       for order in temp_orders:
@@ -923,26 +962,24 @@ def blog_view_detailed(request, pk):
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
             for pizza in order.pizzas.all():
-               cart_num += 1
-               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price * pizza.quantity
 
             for drink in order.drinks.all():
-               cart_num += 1
-               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price * drink.quantity
 
             for snack in order.snacks.all():
-               cart_num += 1
-               cart_price += snack.price
+               cart_price += snack.price * snack.quantity
 
             for sauce in order.sauces.all():
-               cart_num += 1
-               cart_price += sauce.price
+               cart_price += sauce.price * sauce.quantity
 
             for _set in order.sets.all():
-               cart_num += 1
-               cart_price += _set.price
+               cart_price += _set.price * _set.quantity
    else:
       temp_order = None
+
+
+
 
    num_visits=request.session.get('num_visits', 0)
    request.session['num_visits'] = num_visits+1
@@ -960,7 +997,10 @@ def blog_view_detailed(request, pk):
       for element in temp_order.sets.all():
          total_amount += element.quantity
 
-   return render(request, 'main/blog-single.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "post": post})
+   product_counter_text = plural_ru.ru(total_amount, ["товар","товара", "товаров"])
+   
+
+   return render(request, 'main/blog-single.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "post": post,"product_counter_text":product_counter_text, "cashback":cashback, "header_images":header_images, "mobile_image":HeaderMobileImage.objects.get(pk=1)})
 
 def contact_view(request):
    pizzas = Pizza.objects.all()
@@ -981,98 +1021,35 @@ def contact_view(request):
    cart_num = 0
 
    temp_orders = TempOrder.objects.all()
-   if len(temp_orders)>0:
-      for order in temp_orders:
-         if order.user.id == user_num:
-            temp_order = get_object_or_404(TempOrder, pk=order.id)
-
-      for pizza in order.pizzas.all():
-         cart_num += 1
-         cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
-
-      for drink in order.drinks.all():
-         cart_num += 1
-         cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
-
-      for snack in order.snacks.all():
-         cart_num += 1
-         cart_price += snack.price
-
-      for sauce in order.sauces.all():
-         cart_num += 1
-         cart_price += sauce.price
-
-      for _set in order.sets.all():
-         cart_num += 1
-         cart_price += _set.price
-   else:
-      temp_order = ""
-
-
-
-
-   num_visits=request.session.get('num_visits', 0)
-   request.session['num_visits'] = num_visits+1
-
-   total_amount = 0
-   if temp_order!="":
-      for element in temp_order.pizzas.all():
-         total_amount += element.quantity
-      for element in temp_order.drinks.all():
-         total_amount += element.quantity
-      for element in temp_order.snacks.all():
-         total_amount += element.quantity
-      for element in temp_order.sauces.all():
-         total_amount += element.quantity
-      for element in temp_order.sets.all():
-         total_amount += element.quantity
-
-   return render(request, 'main/contact.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount})
-
-def about_view(request):
-   pizzas = Pizza.objects.all()
-
-   drinks = Drink.objects.all()
-
-   volume = Volume.objects.all()
-   pricesFS = PriceForSize.objects.all()
-   pricesFV = PriceForVolume.objects.all()
-
-   snacks = Snack.objects.all()
-   sauces = Sauce.objects.all()
-
-   sets = Set.objects.all()
-
-   user_num = request.session.get('user')
-   cart_price = 0
-   cart_num = 0
    temp_order = None
 
-   temp_orders = TempOrder.objects.all()
+   try:
+      cashback = User.objects.get(link=user_num).cashback
+   except Exception as e:
+      cashback = "0"
+
+   header_images = HeaderImage.objects.all()
+
+
    if len(temp_orders)>0:
       for order in temp_orders:
          if order.user.id == user_num:
             temp_order = get_object_or_404(TempOrder, pk=order.id)
 
             for pizza in order.pizzas.all():
-               cart_num += 1
-               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price * pizza.quantity
 
             for drink in order.drinks.all():
-               cart_num += 1
-               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price * drink.quantity
 
             for snack in order.snacks.all():
-               cart_num += 1
-               cart_price += snack.price
+               cart_price += snack.price * snack.quantity
 
             for sauce in order.sauces.all():
-               cart_num += 1
-               cart_price += sauce.price
+               cart_price += sauce.price * sauce.quantity
 
             for _set in order.sets.all():
-               cart_num += 1
-               cart_price += _set.price
+               cart_price += _set.price * _set.quantity
    else:
       temp_order = None
 
@@ -1094,8 +1071,85 @@ def about_view(request):
          total_amount += element.quantity
       for element in temp_order.sets.all():
          total_amount += element.quantity
+   product_counter_text = plural_ru.ru(total_amount, ["товар","товара", "товаров"])
+   
 
-   return render(request, 'main/about.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount})
+   return render(request, 'main/contact.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount, "product_counter_text":product_counter_text, "cashback":cashback, "header_images":header_images, "mobile_image":HeaderMobileImage.objects.get(pk=1)})
+
+def about_view(request):
+   pizzas = Pizza.objects.all()
+
+   drinks = Drink.objects.all()
+
+   volume = Volume.objects.all()
+   pricesFS = PriceForSize.objects.all()
+   pricesFV = PriceForVolume.objects.all()
+
+   snacks = Snack.objects.all()
+   sauces = Sauce.objects.all()
+
+   sets = Set.objects.all()
+
+   user_num = request.session.get('user')
+   cart_price = 0
+   cart_num = 0
+   temp_order = None
+
+   try:
+      cashback = User.objects.get(link=user_num).cashback
+   except Exception as e:
+      cashback = "0"
+
+   header_images = HeaderImage.objects.all()
+
+   temp_orders = TempOrder.objects.all()
+
+
+   if len(temp_orders)>0:
+      for order in temp_orders:
+         if order.user.id == user_num:
+            temp_order = get_object_or_404(TempOrder, pk=order.id)
+
+            for pizza in order.pizzas.all():
+               cart_price += PriceForSize.objects.filter(pizza=pizza.elder_pizza.id).get(size=pizza.size).price * pizza.quantity
+
+            for drink in order.drinks.all():
+               cart_price += PriceForVolume.objects.filter(drink=drink.elder_drink.id).get(volume=drink.volume).price * drink.quantity
+
+            for snack in order.snacks.all():
+               cart_price += snack.price * snack.quantity
+
+            for sauce in order.sauces.all():
+               cart_price += sauce.price * sauce.quantity
+
+            for _set in order.sets.all():
+               cart_price += _set.price * _set.quantity
+   else:
+      temp_order = None
+
+
+
+
+   num_visits=request.session.get('num_visits', 0)
+   request.session['num_visits'] = num_visits+1
+
+   total_amount = 0
+   if temp_order!=None:
+      for element in temp_order.pizzas.all():
+         total_amount += element.quantity
+      for element in temp_order.drinks.all():
+         total_amount += element.quantity
+      for element in temp_order.snacks.all():
+         total_amount += element.quantity
+      for element in temp_order.sauces.all():
+         total_amount += element.quantity
+      for element in temp_order.sets.all():
+         total_amount += element.quantity
+      
+   product_counter_text = plural_ru.ru(total_amount, ["товар","товара", "товаров"])
+   
+
+   return render(request, 'main/about.html', {'pizzas' : pizzas, 'drinks' : drinks,'number': num_visits,'m_volume': volume, "pricesFS": pricesFS, "pricesFV": pricesFV, "snacks" : snacks, "sauces" : sauces, "sets" : sets, "cart": temp_order, "cart_price" : cart_price, "cart_num": cart_num, "total_amount":total_amount,"product_counter_text":product_counter_text, "cashback":cashback, "header_images":header_images, "mobile_image":HeaderMobileImage.objects.get(pk=1)})
 
 
 def newOrderView(request):
@@ -1104,6 +1158,9 @@ def newOrderView(request):
    phone = request.POST.get("phone").replace(" ", "").replace("-", "").replace("+", "")
    place = request.POST.get("place")
    info = request.POST.get("info")
+
+   user_num = request.session.get('user')
+
 
    try:
       actual_user = User.objects.get(phone=phone)
@@ -1114,8 +1171,9 @@ def newOrderView(request):
 
    actual_user.name = name
    actual_user.phone = phone
-   actual_user.place = place
-   actual_user.info = info
+   
+   actual_user.link = AnonymousUser.objects.get(pk=user_num)
+
 
    actual_user.save()
 
@@ -1132,7 +1190,11 @@ def newOrderView(request):
    order_quantity = len(Order.objects.all())
 
    actual_order.title = order_quantity + 1
+   actual_order.address = place
    actual_order.user = actual_user
+   actual_order.info = info
+
+
 
    actual_order.save()
 
@@ -1156,45 +1218,221 @@ def newOrderView(request):
 
 
 def AdminPanelView(request, pk):
-   orders = Order.objects.all()
-   pagination = Paginator(orders, 6)
+   if request.user.is_authenticated:
 
-   page_count = []
-   a = 0
-   while a<pagination.num_pages:
-      a += 1
-      page_count.append(int(a))
+      orders = Order.objects.all().order_by("pk").reverse()
+      visible_order_list = []
+
+      for order in orders:
+         if order.visible:
+            visible_order_list.append(order)
+
+      pagination = Paginator(visible_order_list, 6)
+      count = len(visible_order_list)
 
 
-   if not pk in page_count:
-      return HttpResponse("Page not found", status=404)
-      
-   next_page = "#"
-   prev_page = "#"
+      page_count = []
+      a = 0
+      while a<pagination.num_pages:
+         a += 1
+         page_count.append(int(a))
 
-   if pk>1:
-      prev_page = str(pk - 1)
-   else:
+
+      if not pk in page_count:
+         return HttpResponse("Page not found", status=404)
+         
+      next_page = "#"
       prev_page = "#"
 
-   if pk + 1 > pagination.num_pages:
-      next_page = "#"
+      if pk>1:
+         prev_page = str(pk - 1)
+      else:
+         prev_page = "#"
+
+      if pk + 1 > pagination.num_pages:
+         next_page = "#"
+      else:
+         next_page = str(pk + 1)
+
+
+      current_page = pk
+
+
+      return render(request, 'main/admin_panel.html', {'current_page': current_page, 'next': next_page, 'prev':prev_page, 'page_count':page_count, "orders": pagination.page(pk).object_list,"count":count})
    else:
-      next_page = str(pk + 1)
+      return HttpResponse("Access denied", status=404)
 
-
-   current_page = pk
-
-
-   return render(request, 'main/admin_panel.html', {'current_page': current_page, 'next': next_page, 'prev':prev_page, 'page_count':page_count})
    
+def AdminPanelViewSingle(request, pk):
+   if request.user.is_authenticated:
+      order = Order.objects.get(pk=pk)
 
+      return render(request, 'main/admin_panel_single.html', {"order": order})
+   else:
+      return HttpResponse("Access denied", status=404)
+   
+   
+def orderCountView(request):
+   if request.user.is_authenticated:
+      count = len(list(Order.objects.all()))
 
-
-
-
-
-
-
-      
+      return HttpResponse(count, status=200)
+   else:
+      return HttpResponse("Access denied", status=404)
                
+def getOrderView(request, pk):
+   if request.user.is_authenticated:
+      order = Order.objects.get(title=pk)
+
+      return HttpResponse("{} {} {} {}".format(order.id, order.title, order.user, order.created_date), status=200)
+   else:
+      return HttpResponse("Access denied", status=404)
+
+
+def url_redirect(request):
+   url = request.path_info
+   if "blog" in url:
+      redirect_url = "/blog/1/"
+   elif "vacancy" in url:
+      redirect_url = "/vacancy/1/"
+   else:
+      redirect_url = "/admin_panel/1/"
+
+
+   return HttpResponsePermanentRedirect(redirect_url)
+
+def toggleOrder_view(request, pk):
+   if request.user.is_authenticated:
+      order = Order.objects.get(title=pk)
+      temp_orders = TempOrder.objects.all()
+   
+      cart_price = 0
+      for pizza in order.pizzas.all():
+         cart_price += pizza.price * pizza.quantity
+
+      for drink in order.drinks.all():
+         cart_price += drink.price * drink.quantity
+
+      for snack in order.snacks.all():
+         cart_price += snack.price * snack.quantity
+
+      for sauce in order.sauces.all():
+         cart_price += sauce.price * sauce.quantity
+
+      for _set in order.sets.all():
+         cart_price += _set.price * _set.quantity
+
+      cashback = cart_price*0.1
+
+      if order.active:
+         order.active = False
+         order.save()
+         
+         user = order.user
+         user.cashback = user.cashback - cashback
+         user.save()
+
+      else:
+         order.active = True
+         order.save()
+         
+         user = order.user
+         user.cashback = user.cashback + cashback
+         user.save()
+
+
+
+
+      return HttpResponse("{} {} {}".format(order.active, user, user.cashback), status=200)
+   else:
+      return HttpResponse("Access denied", status=404)
+
+def closeOrder_view(request, pk):
+   if request.user.is_authenticated:
+      try:
+         temp_order = Order.objects.get(title=pk)
+         actual_order = ArchievedOrder()
+
+         actual_order.user = temp_order.user
+         actual_order.title = temp_order.title
+         actual_order.address = temp_order.address
+         actual_order.info = temp_order.info
+         actual_order.active = False
+
+         
+
+         actual_order.created_date = temp_order.created_date
+         actual_order.state = temp_order.state
+         actual_order.save()
+
+         for element in temp_order.pizzas.all():
+            actual_order.pizzas.add(element)
+         for element in temp_order.drinks.all():
+            actual_order.drinks.add(element)
+         for element in temp_order.snacks.all():
+            actual_order.snacks.add(element)
+         for element in temp_order.sauces.all():
+            actual_order.sauces.add(element)
+         for element in temp_order.sets.all():
+            actual_order.sets.add(element)
+         for element in temp_order.presents.all():
+            actual_order.presents.add(element)
+
+         temp_order.visible = False;
+         temp_order.save()
+
+
+
+         return HttpResponse("Order archieved", status=200)
+      except Exception as e:
+         return HttpResponse(str(e), status=500)
+
+
+   else:
+      return HttpResponse("Access denied", status=404)
+
+def archievedordersView(request, pk):
+   if request.user.is_authenticated:
+
+      orders = ArchievedOrder.objects.all().order_by("pk").reverse()
+      count = len(list(ArchievedOrder.objects.all()))
+      pagination = Paginator(orders, 6)
+
+      page_count = []
+      a = 0
+      while a<pagination.num_pages:
+         a += 1
+         page_count.append(int(a))
+
+
+      if not pk in page_count:
+         return HttpResponse("Page not found", status=404)
+         
+      next_page = "#"
+      prev_page = "#"
+
+      if pk>1:
+         prev_page = str(pk - 1)
+      else:
+         prev_page = "#"
+
+      if pk + 1 > pagination.num_pages:
+         next_page = "#"
+      else:
+         next_page = str(pk + 1)
+
+
+      current_page = pk
+
+
+      return render(request, 'main/admin_panel_archieve.html', {'current_page': current_page, 'next': next_page, 'prev':prev_page, 'page_count':page_count, "orders": pagination.page(pk).object_list,"count":count})
+   else:
+      return HttpResponse("Access denied", status=404)
+
+def AdminPanelViewArchievedSingle(request, pk):
+   if request.user.is_authenticated:
+      order = ArchievedOrder.objects.get(pk=pk)
+
+      return render(request, 'main/admin_panel_single.html', {"order": order})
+   else:
+      return HttpResponse("Access denied", status=404)

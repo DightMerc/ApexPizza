@@ -66,7 +66,8 @@
                         </div>
                         <div class="header-cart-number">
                             <span id="cart_ammount">{{ total_amount }}</span>
-                            <span>товара</span>
+                            <span id="product_counter">{{ product_counter_text }}</span>
+                            
 
                             <span class="header-cart-toggler">
                                 <i class="fa fa-angle-down"></i>
@@ -101,11 +102,11 @@
                             <h5>{{ drink.title }}</h5>
                             <span>{{ drink.volume }}</span>
                             <div class="amount-controllers">
-                                <button class="amount-remove" type="button" name="button">
+                                <button class="amount-remove" type="button" name="button" id="minus drink {{ drink.id }} {{ cart.id }}" onclick="change_amount(this.id)">
                                     <i class="fa fa-minus"></i>
                                 </button>
                                 <input type="text" name="name" value="{{drink.quantity}}" id="input_value drink {{ drink.id }}">
-                                <button class="amount-add" type="button" name="button">
+                                <button class="amount-add" type="button" name="button" id="plus drink {{ drink.id }} {{ cart.id }}" onclick="change_amount(this.id)">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -118,11 +119,11 @@
                             </button>
                             <h5>{{ snack.title }}</h5>
                             <div class="amount-controllers">
-                                <button class="amount-remove" type="button" name="button" id="minus snack {{ snack.id }} {{ cart.id }}">
+                                <button class="amount-remove" type="button" name="button" id="minus snack {{ snack.id }} {{ cart.id }}" onclick="change_amount(this.id)">
                                     <i class="fa fa-minus"></i>
                                 </button>
                                 <input type="text" name="name" value="{{snack.quantity}}" id="input_value snack {{ snack.id }}">
-                                <button class="amount-add" type="button" name="button" id="plus snack {{ snack.id }} {{ cart.id }}">
+                                <button class="amount-add" type="button" name="button" id="plus snack {{ snack.id }} {{ cart.id }}" onclick="change_amount(this.id)">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -135,11 +136,11 @@
                             </button>
                             <h5>{{ sauce.title }}</h5>
                             <div class="amount-controllers">
-                                <button class="amount-remove" type="button" name="button" id="minus sauce {{ sauce.id }} {{ cart.id }}">
+                                <button class="amount-remove" type="button" name="button" id="minus sauce {{ sauce.id }} {{ cart.id }}" onclick="change_amount(this.id)">
                                     <i class="fa fa-minus"></i>
                                 </button>
                                 <input type="text" name="name" value="{{sauce.quantity}}" id="input_value sauce {{ sauce.id }}">
-                                <button class="amount-add" type="button" name="button" id="plus sauce {{ sauce.id }} {{ cart.id }}">
+                                <button class="amount-add" type="button" name="button" id="plus sauce {{ sauce.id }} {{ cart.id }}" onclick="change_amount(this.id)"> 
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -152,11 +153,11 @@
                             </button>
                             <h5>{{ set.title }}</h5>
                             <div class="amount-controllers">
-                                <button class="amount-remove" type="button" name="button" id="minus set {{ set.id }} {{ cart.id }}">
+                                <button class="amount-remove" type="button" name="button" id="minus set {{ set.id }} {{ cart.id }}" onclick="change_amount(this.id)">
                                     <i class="fa fa-minus"></i>
                                 </button>
                                 <input type="text" name="name" value="{{set.quantity}}" id="input_value set {{ set.id }}">
-                                <button class="amount-add" type="button" name="button" id="plus set {{ set.id }} {{ cart.id }}">
+                                <button class="amount-add" type="button" name="button" id="plus set {{ set.id }} {{ cart.id }}" onclick="change_amount(this.id)">
                                     <i class="fa fa-plus"></i>
                                 </button>
                             </div>
@@ -165,13 +166,18 @@
                         
                         <div class="header-cart-products-sum" id="cart_cost">
                             <span>Сумма заказа:</span>
-                            <span>{{ cart_price|floatformat:"0" }} сум</span>
+                            <span id="cart_price_inline">{{ cart_price|floatformat:"0" }} сум</span>
                             
                         </div>
                     </div>
                 </div>
                 
-                <a href="" class="btn-header-cashback"><img src="{% static 'images\cashback.png' %}" alt="">Cashback</a>
+                <button class="btn-header-cashback" id="cash_back_toggle" ><img src="images/cashback.png" alt="">Cashback</button>
+                <div class="header-cashback" id="header_cashback">
+                    <span class="header-cashback-title">Ваша сумма кэшбека:</span>
+                    <span class="header-cashback-sum">{{ cashback }} <span>сум</span></span>
+                </div>
+                
             </div>
         </div>
     </header>
@@ -214,23 +220,35 @@
                 </div>
             </div>
         </div>
-        <a href="/cart/" class="header-mobile-cart">
-            <i class="fa fa-shopping-basket" aria-hidden="true"></i>
-            <span class="header-mobile-cart-number" id="mobile_amount">{{ total_amount }}</span>
-        </a>
+        <div class="header-mobile-btns">
+                <a href="/cart/" class="header-mobile-cart">
+                    <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                    <span class="header-mobile-cart-number" id="mobile_amount">{{ total_amount }}</span>
+                    
+                </a>
+                <button class="header-mobile-cashback" id="cash_back_mobile">
+                        
+                    <img src="{% static 'images\cashback.png' %}" alt="">
+                </button>
+                <div class="header-mobile-cashback-info">
+                    <span class="header-mobile-cashback-title">Ваша сумма кэшбека:</span>
+                    <span class="header-mobile-cashback-sum">{{ cashback }} <span>сум</span></span>
+                    <div class="hmc-close" >
+                        <button class="fa fa-close" id="cash_back_close"></button>
+                    </div>
+                </div>
+            </div>
+        
     </header>
     <!-- Header Mobile end  -->
     <section class="hero-slider"> 
-            
-        <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
-        <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
-        <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
-        <div><img src="{% static 'images\banners\apex-banner-1.jpg' %}" alt=""></div>
+        {% for image in header_images %}
+            <div><img src="/media/{{image.picture}}" alt=""></div>
+        {% endfor %}
     </section>
 
     <section class="hero-mobile">
-            
-        <img src="{% static 'images\banners\banner-mobile.jpg' %}" alt="">
+            <div><img src="/media/{{mobile_image.picture}}" alt=""></div>
     </section>
     <section class="main-content">
         <div class="page-cart">
@@ -238,10 +256,10 @@
                 <h2 class="section-title-no-bg">
                     Корзина
                 </h2>
-                <form action="" class="promo-kod">
+                <!-- <form action="" class="promo-kod">
                     <input type="text" placeholder="Введите промо код">
                     <button type="submit">Применить</button>
-                </form>
+                </form> -->
             </div>
             <div class="wrapper" id="cart_wrapper">
                 {% for pizza in cart.pizzas.all %}
@@ -260,8 +278,8 @@
                             </form>
                         </div>
 
-                        <div class="cart-card-price">
-                            {{ pizza.price|floatformat:"0" }} сум
+                        <div class="cart-card-price" id="cart-card pizza {{ pizza.id }} {{ cart.id }}">
+                            {% multi pizza.price pizza.quantity %} сум
                         </div>
                         <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove pizza {{ pizza.id }} {{ cart.id }} cart"></i></button>
 
@@ -284,8 +302,10 @@
                             </form>
                         </div>
 
-                        <div class="cart-card-price">
-                            {{ drink.price|floatformat:"0" }} сум
+                        <div class="cart-card-price" id="cart-card drink {{ drink.id }} {{ cart.id }}">
+                        
+                            {% multi drink.price drink.quantity %} сум
+                            
                         </div>
                         <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove drink {{ drink.id }} {{ cart.id }} cart"></i></button>
 
@@ -308,8 +328,10 @@
                             </form>
                         </div>
 
-                        <div class="cart-card-price">
-                            {{ snack.price|floatformat:"0" }} сум
+                        <div class="cart-card-price" id="cart-card snack {{ snack.id }} {{ cart.id }}">
+                        
+                            {% multi snack.price snack.quantity %} сум
+                            
                         </div>
                         <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove snack {{ snack.id }} {{ cart.id }} cart"></i></button>
 
@@ -332,8 +354,10 @@
                             </form>
                         </div>
 
-                        <div class="cart-card-price">
-                            {{ sauce.price|floatformat:"0" }} сум
+                        <div class="cart-card-price" id="cart-card sauce {{ sauce.id }} {{ cart.id }}">
+                        
+                            {% multi sauce.price sauce.quantity %} сум
+                            
                         </div>
                         <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove sauce {{ sauce.id }} {{ cart.id }} cart"></i></button>
 
@@ -356,8 +380,10 @@
                             </form>
                         </div>
 
-                        <div class="cart-card-price">
-                            {{ set.price|floatformat:"0" }} сум
+                        <div class="cart-card-price" id="cart-card set {{ set.id }} {{ cart.id }}">
+                        
+                            {% multi set.price set.quantity %} сум
+                            
                         </div>
                         <button class="cart-card-delete-btn" ><i class="fa fa-close" id="remove set {{ set.id }} {{ cart.id }} cart"></i></button>
 
@@ -367,7 +393,7 @@
            
                 
             </div>
-            <div class="wrapper">
+            <!-- <div class="wrapper">
                 <h2 class="section-title-no-bg">
                     Подарки новому клиенту
                 </h2>
@@ -397,15 +423,17 @@
                             </form>
                         </div>
 
-                        <div class="cart-card-price">
-                            {{ present.price|floatformat:"0" }} сум
+                        <div class="cart-card-price" id="cart-card present {{ present.id }} {{ cart.id }}">
+                            
+                                {{ present.price|floatformat:"0" }} сум
+                            
                         </div>
 
                     </div>
                 </div>
                 {% endfor %}  
                 
-            </div>
+            </div> -->
             <div class="wrapper checkout">
                 <h2 class="section-title-no-bg">
                     Оформление заказа
@@ -441,9 +469,18 @@
                                     {% endfor %}
                                     
                                 </div>
-                                <button class="add-to-cart" id="cart_drinks {{ drink.id }}">
-                                    В корзину
-                                </button>
+                                {% for price in pricesFV %}
+
+                                {% if price.drink.id == drink.id %}
+                                    {% if price.volume.title == "0,5л" %}
+                                        <button class="add-to-cart" id="cart_drinks {{ drink.id }} {{price.volume.id}}">
+                                            В корзину
+                                        </button>
+                                    {% endif %}
+                                {% endif %}
+                            
+                                {% endfor %}
+                                
                             </div>
                         </div>
                     {% endif %}
@@ -482,12 +519,12 @@
             <div class="cart-page-total">
                 <div class="wrapper">
                     <span>Сумма заказа:</span>
-                    <span>87 000 сум</span>
+                    <span id="bottom_price">{{ cart_price|floatformat:"0" }} сум</span>
                 </div>
             </div>
             <div class="wrapper">
                 <div class="cart-btns">
-                    <a href="index.html" class="cart-back-btn">Вернуться на главную</a>
+                    <a href="/" class="cart-back-btn">Вернуться на главную</a>
                     <button class="cart-submit-btn add-to-cart" id="order_btn">Заказать</button>
                 </div>
             </div>

@@ -22,12 +22,12 @@
 <body>
         <header class="header">
             <div class="header-top">
-                <a href="/" class="logo">
+                <a href="/admin_panel/1/" class="logo">
                     <img src="{% static 'images\logo.png' %}" alt="">
                 </a>
                 <div class="header-top-right">
                     <div class="header-delivery">
-                        <span>Доставка пиццы</span>
+                        <span id="admin_panel">Доставка пиццы</span>
                         <span>Среднее время доставки 1 час</span>
                     </div>
                     <div class="header-call">
@@ -52,43 +52,48 @@
                 <h2 class="section-title-no-bg">
                     Панель заказов
                 </h2>
+                <h3 id="order_count">
+                        <i># {{ count }} :</i>
+                </h3>
 
-                <div class="posts">
+                <div class="posts" id="posts1">
                     {% for order in orders %}
-                        {% if order.active %}
                         <article class="post-card">
                             
                             <div class="post-card-text">
-                                <div class="post-card-title no-link">
-                                    <h3>Заказ № “{{ order.title }}”</h3>
-                                </div>
+                                <a href="/admin_panel/{{ order.id }}/detail/" class="post-card-title">
+                                    <h3>Заказ № “{{ order.title }}” </h3>
+                                </a>
+                                
                                 <div class="post-card-content">
                                     <ul>
                                         <li><b>Клиент: </b>{{ order.user }}</li>
+                                        <li><b>Дата: </b>{{ order.created_date }}</li>
+
                                         
                                     </ul>
                                 </div>
+                               
                             </div>
                         </article>
-                        {% endif %}
                     {% endfor %}
                     
                 </div>
                 
                 <ul class="pagination">
                     
-                    <li><a href="{{ prev }}">«</a></li>
+                    <li><a href="/admin_panel/{{ prev }}">«</a></li>
                     
                     {% for a in page_count %}
                         {% if a == current_page %}
-                            <li><a class="active" href="{{ a }}">{{ a }}</a></li>
+                            <li><a class="active" href="/admin_panel/{{ a }}">{{ a }}</a></li>
                         {% else %}
-                            <li><a href="{{ a }}">{{ a }}</a></li>
+                            <li><a href="/admin_panel/{{ a }}">{{ a }}</a></li>
                         {% endif %}
                         
 
                     {% endfor %}
-                    <li><a href="{{ next }}">»</a></li>
+                    <li><a href="/admin_panel/{{ next }}">»</a></li>
                 </ul>
             </div>
         </div>
@@ -97,50 +102,7 @@
     <!-- FOOTER -->
     <div class="footer-yellow-line"></div>
 
-    <footer class="footer">
-        <div class="wrapper">
-            <div class="footer-logo">
-                <a href="index.html">
-                    <img src="images\logo-footer.png" alt="">
-                </a>
-            </div>
-            <div class="footer-menu">
-                <ul>
-                    <li><a href="#">Пиццы</a></li>
-                    <li><a href="#">Напитки</a></li>
-                    <li><a href="#">Закуски</a></li>
-                    <li><a href="#">Соусы</a></li>
-                    <li><a href="#">Сеты</a></li>
-                    <li><a href="#">Акции</a></li>
-                    <li><a href="#">Вакансии</a></li>
-                    <li><a href="#">Блог</a></li>
-                    <li><a href="#">Контакты</a></li>
-                    <li><a href="#">О нас</a></li>
-                </ul>
-            </div>
-            <div class="footer-numbers">
-                <h4>Зона<br>Доставки</h4>
-                <a href="tel:+998712022020" class="footer-phone">
-                    <img src="images\footer-phone.png" alt="">
-                    (71) 202-20-20
-                </a>
-                <div class="footer-delivery">
-                    <span>Доставка пиццы</span>
-                    <span>Среднее время доставки 1 час</span>
-                </div>
-            </div>
-            <div class="footer-map-socials">
-                <div class="footer-map">
-                    <iframe src="https://yandex.ru/map-widget/v1/-/CCB8VJyy" width="560" height="400" frameborder="1" allowfullscreen="true"></iframe>
-                </div>
-                <div class="footer-socials">
-                    <a href=""><i class="fa fa-instagram"></i> </a>
-                    <a href=""><i class="fa fa-facebook-square" aria-hidden="true"></i> </a>
-                </div>
-            </div>
-        </div>
-
-    </footer>
+    
     <script src="{% static 'js\jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'js\owl.carousel.min.js' %}"></script>
     <script src="{% static 'slick\slick.min.js' %}"></script>

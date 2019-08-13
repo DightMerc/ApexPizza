@@ -119,6 +119,20 @@ $('.header-cart-toggler').click(function () {
     $('.header-cart').toggleClass('width');
 })
 
+$(document).on('click', '.btn-header-cashback', function() {
+    $('.header-cashback').toggleClass('visible');
+});
+
+$(document).on('click', '.header-mobile-cashback', function() {
+    $('.header-mobile-cashback-info').toggleClass('visible');
+});
+
+$(document).on('click', '.hmc-close', function() {
+    $('.header-mobile-cashback-info').toggleClass('visible');
+});
+
+
+
 $('.header-toggler').click(function () {
     $(this).toggleClass('active');
     $('.header-mobile-menu').toggleClass('visible');
@@ -155,7 +169,6 @@ $('.qtyplus').click(function (e) {
     // If is not undefined
     if (!isNaN(currentVal)) {
         // Increment
-        document.getElementById("quantity " + e.target.parentNode.id.replace("cart ","")).value = currentVal + 1
         var data = "plus " + e.target.parentNode.id.replace("cart ", "")
         change_amount(data, false)
         
@@ -179,7 +192,6 @@ $(".qtyminus").click(function (e) {
     // If it isn't undefined or its greater than 0
     if (!isNaN(currentVal) && currentVal > 0) {
         // Decrement one
-        document.getElementById("quantity " + e.target.parentNode.id.replace("cart ","")).value = currentVal - 1
         var data = "minus " + e.target.parentNode.id.replace("cart ", "")
         change_amount(data, false)
         

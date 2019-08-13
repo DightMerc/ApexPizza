@@ -1,0 +1,114 @@
+{% load static %}
+{% load my_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Apex Pizza - Доставка пиццы в Ташкенте! Среднее время доставки 1 час</title>
+    <link rel="stylesheet" href="{% static 'css\font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'slick\slick-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'slick\slick.css' %}">
+    <link rel="stylesheet" href="{% static 'css\owl.carousel.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css\owl.theme.default.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css\style.css' %}">
+    <link rel="stylesheet" href="{% static 'css\fonts.css' %}">
+    <link rel="shortcut icon" href="{% static 'images\favapex.ico' %}" type="image/x-icon">
+</head>
+
+<body>
+        <header class="header">
+            <div class="header-top">
+                <a href="/admin_panel/1/" class="logo">
+                    <img src="{% static 'images\logo.png' %}" alt="">
+                </a>
+                <div class="header-top-right">
+                    <div class="header-delivery">
+                        <span id="admin_panel">Доставка пиццы</span>
+                        <span>Среднее время доставки 1 час</span>
+                    </div>
+                    <div class="header-call">
+                        <img src="{% static 'images\phone.png' %}" alt="">
+                        
+                        <a href="tel:+998712022020">(71)202-20-20</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    
+
+    <section class="hero-mobile">
+            <img src="{% static 'images\banners\banner-mobile.jpg' %}" alt="">
+        
+    </section>
+    <section class="main-content">
+        <div class="blog">
+            <div class="wrapper">
+                <h2 class="section-title-no-bg">
+                    Панель заказов
+                </h2>
+                <h3 >
+                        <i># {{ count }} :</i>
+                </h3>
+
+                <div class="posts" >
+                    {% for order in orders %}
+                        <article class="post-card">
+                            
+                            <div class="post-card-text">
+                                <a href="/admin_panel/archieved/{{ order.id }}/detail/" class="post-card-title">
+                                    <h3>Заказ № “{{ order.title }}” </h3>
+                                </a>
+                                
+                                <div class="post-card-content">
+                                    <ul>
+                                        <li><b>Клиент: </b>{{ order.user }}</li>
+                                        <li><b>Дата: </b>{{ order.created_date }}</li>
+
+                                        
+                                    </ul>
+                                </div>
+                                
+                            </div>
+                        </article>
+                    {% endfor %}
+                    
+                </div>
+                
+                <ul class="pagination">
+                    
+                    <li><a href="/admin_panel/{{ prev }}">«</a></li>
+                    
+                    {% for a in page_count %}
+                        {% if a == current_page %}
+                            <li><a class="active" href="/admin_panel/{{ a }}">{{ a }}</a></li>
+                        {% else %}
+                            <li><a href="/admin_panel/{{ a }}">{{ a }}</a></li>
+                        {% endif %}
+                        
+
+                    {% endfor %}
+                    <li><a href="/admin_panel/{{ next }}">»</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <div class="footer-yellow-line"></div>
+
+    
+    <script src="{% static 'js\jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js\owl.carousel.min.js' %}"></script>
+    <script src="{% static 'slick\slick.min.js' %}"></script>
+    <script src="{% static 'js\script.js' %}"></script>
+    <script src="{% static 'js\ajax.js' %}"></script>
+
+</body>
+
+</html>

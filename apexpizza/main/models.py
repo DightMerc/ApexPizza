@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 """
 
@@ -419,9 +420,10 @@ class User(models.Model):
 
     phone = models.CharField("Номер телефона", max_length=20, default="", unique=False, null=False)
 
-    address = models.TextField("Адрес")
 
     cashback = models.PositiveIntegerField()
+
+    link = models.ForeignKey(AnonymousUser, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.phone)
@@ -442,7 +444,13 @@ class OrderState(models.Model):
     
 class Order(models.Model):
     title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    visible = models.BooleanField("Показывать", default=True)
+
+    address = models.TextField("Адрес")
+
+    info = models.TextField("Инфо")
 
     active = models.BooleanField("Актуально", default=False)
 
@@ -453,6 +461,8 @@ class Order(models.Model):
     sets = models.ManyToManyField(TempSet)
     presents = models.ManyToManyField(TempPresent)
 
+    created_date = models.DateTimeField(default=timezone.now)
+
     state = models.ForeignKey(OrderState, on_delete=models.CASCADE, default=1)
 
     def __str__(self):
@@ -461,6 +471,59 @@ class Order(models.Model):
     class Meta:
         verbose_name = "Заказ"
         verbose_name_plural = "Заказы"
+
+
+class HeaderImage(models.Model):
+    title = models.TextField("Название")
+    picture = models.ImageField("Фото", blank=True, null=True, upload_to="pictures/")
+
+    def __str__(self):
+        return str(self.title)
+    
+    class Meta:
+        verbose_name = "Фото для слайдера"
+        verbose_name_plural = "Фото для слайдера"
+
+class HeaderMobileImage(models.Model):
+    picture = models.ImageField("Фото", blank=True, null=True, upload_to="pictures/")
+
+    def __str__(self):
+        return str(self.pk)
+    
+    class Meta:
+        verbose_name = "Фото для мобильного Header"
+        verbose_name_plural = "Фото для мобильного Header"
+
+
+class ArchievedOrder(models.Model):
+
+    title = models.CharField("Название", max_length=511, default="", unique=False, null=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default="")
+
+
+    address = models.TextField("Адрес", default="")
+
+    info = models.TextField("Инфо", default="")
+
+    active = models.BooleanField("Актуально", default=False)
+
+    pizzas = models.ManyToManyField(TempPizza) 
+    drinks = models.ManyToManyField(TempDrink)
+    snacks = models.ManyToManyField(TempSnack)
+    sauces = models.ManyToManyField(TempSauce)
+    sets = models.ManyToManyField(TempSet)
+    presents = models.ManyToManyField(TempPresent)
+
+    created_date = models.DateTimeField(default=timezone.now)
+
+    state = models.ForeignKey(OrderState, on_delete=models.CASCADE, default=1)
+
+    def __str__(self):
+        return str(self.title)
+    
+    class Meta:
+        verbose_name = "Архивированный заказ"
+        verbose_name_plural = "Архивированные заказы"
 
         
 
